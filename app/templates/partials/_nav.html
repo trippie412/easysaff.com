@@ -1,0 +1,38 @@
+<nav class="navbar navbar-expand-lg fixed-top main-nav" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="{{ url_for('main.index') }}">
+      <span class="brand-icon"><i class="bi bi-bank2"></i></span>
+      Green<span class="text-green">Lend</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+            aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mainNavbar">
+      <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.index') }}#about">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.index') }}#how">How it Works</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.index') }}#features">Features</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.services') }}">Services</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.index') }}#faq">FAQ</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.index') }}#contact">Contact</a></li>
+      </ul>
+      <div class="d-flex align-items-center gap-2 nav-actions">
+        {% if current_user.is_authenticated %}
+          {% if current_user.is_admin %}
+            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-green btn-sm">
+              <i class="bi bi-shield-lock me-1"></i>Admin Console
+            </a>
+          {% else %}
+            <a href="{{ url_for('dashboard.index') }}" class="btn btn-grad btn-sm">
+              <i class="bi bi-grid-1x2 me-1"></i>Dashboard
+            </a>
+          {% endif %}
+        {% else %}
+          <a href="{{ url_for('auth.login') }}" class="btn btn-outline-green btn-sm">Log In</a>
+          <a href="{{ url_for('auth.register') }}" class="btn btn-grad btn-sm">Get Started</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,36 @@
+{% extends 'dashboard_base.html' %}
+{% block active_page %}messages{% endblock %}
+{% block page_title %}Messages{% endblock %}
+{% block page_subtitle %}Conversations with our support team{% endblock %}
+
+{% block app_content %}
+<div class="card app-card">
+  <div class="card-header app-card-header">
+    <h5 class="mb-0"><i class="bi bi-chat-dots me-2 text-green"></i>Inbox</h5>
+  </div>
+  <ul class="list-group list-group-flush">
+    {% for m in items %}
+    <li class="list-group-item {{ 'unread-row' if not m.is_read }}">
+      <a href="{{ url_for('dashboard.message_detail', message_id=m.id) }}" class="d-flex gap-3 text-decoration-none text-body">
+        <span class="avatar-circle {{ 'avatar-green' if m.direction == 'in' else 'avatar-gray' }}">
+          {{ 'G' if m.direction == 'in' else current_user.initials() }}
+        </span>
+        <div class="flex-grow-1">
+          <div class="d-flex justify-content-between flex-wrap gap-2">
+            <strong>{{ m.subject }} {% if not m.is_read %}<span class="badge-dot static-dot"></span>{% endif %}</strong>
+            <small class="text-muted">{{ m.created_at.strftime('%d %b %Y, %I:%M %p') }}</small>
+          </div>
+          <p class="mb-0 text-muted small">{{ m.body|truncate(110) }}</p>
+          <small class="text-green">{{ 'Support' if m.direction == 'in' else 'You' }} · {{ 'Incoming' if m.direction == 'in' else 'Sent' }}</small>
+        </div>
+      </a>
+    </li>
+    {% else %}
+    <li class="list-group-item text-center text-muted py-5">
+      <i class="bi bi-chat-square-text d-block fs-1 mb-2"></i>No messages yet.
+      <a href="{{ url_for('dashboard.support') }}" class="d-block mt-2 text-green">Send a message to support</a>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Log In{% endblock %}
+{% block body_class %}auth-page{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-card glass">
+    <div class="auth-head text-center mb-4">
+      <a class="navbar-brand justify-content-center" href="{{ url_for('main.index') }}">
+        <span class="brand-icon"><i class="bi bi-bank2"></i></span>
+        Green<span class="text-green">Lend</span>
+      </a>
+      <h1 class="h3 mt-3">Welcome back 👋</h1>
+      <p class="text-muted">Log in with your phone number</p>
+    </div>
+
+    <form method="post" novalidate>
+      {{ form.hidden_tag() }}
+      <div class="mb-3">
+        <label class="form-label">Phone Number</label>
+        <div class="input-group input-group-lg">
+          <span class="input-group-text"><i class="bi bi-phone"></i></span>
+          {{ form.phone(class="form-control", placeholder="0712 345 678", autofocus=true) }}
+        </div>
+        {% for e in form.phone.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <div class="input-group input-group-lg">
+          <span class="input-group-text"><i class="bi bi-lock"></i></span>
+          {{ form.password(class="form-control", placeholder="Your password") }}
+        </div>
+        {% for e in form.password.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="form-check">
+          {{ form.remember(class="form-check-input") }}
+          {{ form.remember.label(class="form-check-label") }}
+        </div>
+        <a href="{{ url_for('auth.forgot_password') }}" class="small text-green">Forgot Password?</a>
+      </div>
+      <button class="btn btn-grad btn-lg w-100" type="submit">
+        <i class="bi bi-box-arrow-in-right me-2"></i>Log In
+      </button>
+    </form>
+
+    <p class="text-center mt-4 mb-0 small">
+      Don't have an account? <a href="{{ url_for('auth.register') }}" class="text-green fw-semibold">Create one</a>
+    </p>
+    <p class="text-center mt-2 mb-0 small">
+      <a href="{{ url_for('admin.login') }}" class="text-muted"><i class="bi bi-shield-lock me-1"></i>Admin Login</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

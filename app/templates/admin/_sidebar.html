@@ -1,0 +1,42 @@
+<nav class="app-sidebar-nav">
+  <div class="sidebar-user">
+    <span class="avatar-circle avatar-lg admin-avatar"><i class="bi bi-shield-lock"></i></span>
+    <div>
+      <strong>{{ current_user.full_name() }}</strong>
+      <small>{{ current_user.phone }} · Super Admin</small>
+    </div>
+  </div>
+
+  <ul class="sidebar-menu">
+    <li>
+      <a class="{{ 'active' if active == 'dashboard' }}" href="{{ url_for('admin.dashboard') }}">
+        <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+      </a>
+    </li>
+    <li>
+      <a class="{{ 'active' if active == 'members' }}" href="{{ url_for('admin.members') }}">
+        <i class="bi bi-people"></i><span>Members</span>
+      </a>
+    </li>
+    <li>
+      <a class="{{ 'active' if active == 'loans' }}" href="{{ url_for('admin.loans') }}">
+        <i class="bi bi-wallet2"></i><span>Loans</span>
+        {% if pending_loans_count %}<span class="sidebar-badge">{{ pending_loans_count }}</span>{% endif %}
+      </a>
+    </li>
+    <li>
+      <a class="{{ 'active' if active == 'transactions' }}" href="{{ url_for('admin.transactions') }}">
+        <i class="bi bi-receipt"></i><span>Transactions</span>
+      </a>
+    </li>
+  </ul>
+
+  <div class="sidebar-cta">
+    <a href="{{ url_for('admin.members') }}" class="btn btn-grad w-100">
+      <i class="bi bi-person-plus me-1"></i>Manage Members
+    </a>
+  </div>
+  <a class="sidebar-logout" href="{{ url_for('admin.logout') }}">
+    <i class="bi bi-box-arrow-right me-2"></i>Logout
+  </a>
+</nav>

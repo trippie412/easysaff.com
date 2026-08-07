@@ -1,0 +1,56 @@
+{% extends 'dashboard_base.html' %}
+{% block active_page %}dashboard{% endblock %}
+{% block page_title %}Deposit{% endblock %}
+{% block page_subtitle %}Top up your wallet via M-PESA{% endblock %}
+
+{% block app_content %}
+<div class="row g-4 justify-content-center">
+  <div class="col-lg-7">
+    <form method="post" class="card app-card p-4">
+      <h5 class="mb-1"><i class="bi bi-plus-circle me-2 text-green"></i>New Deposit</h5>
+      <p class="text-muted small mb-4">Enter the amount you want to <strong>receive</strong> — the service fee is added automatically and the exact total is shown below.</p>
+
+      <label class="form-label">Amount You Receive (KES)</label>
+      <div class="input-group input-group-lg mb-1">
+        <span class="input-group-text">KES</span>
+        <input type="number" name="amount" id="depositAmount"
+               class="form-control fee-amount-input" placeholder="e.g. 10000"
+               min="1" max="500000" step="100" inputmode="numeric" required autofocus>
+      </div>
+      <small class="text-muted d-block mb-4">Valid range: KES 1 – KES 500,000.</small>
+
+      <div class="card fee-calc-card p-4 mb-4" data-fee-calculator>
+        <h6 class="mb-3"><i class="bi bi-calculator me-2 text-green"></i>Payment Breakdown</h6>
+        <div class="fee-row"><span>You Receive</span><strong id="feeReceive">KES 0</strong></div>
+        <div class="fee-row"><span>Service Fee</span><strong id="feeFee" class="text-muted">KES 0</strong></div>
+        <hr>
+        <div class="fee-row fee-total"><span>Total To Pay (M-PESA)</span><strong id="feeTotal" class="text-green">KES 0</strong></div>
+        <p class="small text-muted mt-3 mb-0" id="feeHint">Enter an amount to see your exact breakdown.</p>
+      </div>
+
+      <button class="btn btn-grad btn-lg w-100" type="submit">
+        <i class="bi bi-phone me-2"></i>Continue to STK Push
+      </button>
+    </form>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card app-card p-4">
+      <h6 class="mb-3"><i class="bi bi-table me-2 text-green"></i>Service Fee Table</h6>
+      <div class="table-responsive" style="max-height: 420px;">
+        <table class="table table-sm app-table mb-0">
+          <thead><tr><th>You Receive (KES)</th><th class="text-end">Service Fee (KES)</th></tr></thead>
+          <tbody>
+            {% for low, high, fee in tiers %}
+            <tr>
+              <td class="small">{{ '{:,}'.format(low) }} – {{ '{:,}'.format(high) }}</td>
+              <td class="text-end fw-semibold small">{{ '{:,}'.format(fee) }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

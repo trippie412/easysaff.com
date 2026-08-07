@@ -1,0 +1,60 @@
+{% extends 'dashboard_base.html' %}
+{% block active_page %}support{% endblock %}
+{% block page_title %}Support{% endblock %}
+{% block page_subtitle %}We're online 24/7{% endblock %}
+
+{% block app_content %}
+<div class="row g-4">
+  <div class="col-lg-7">
+    <form method="post" class="card app-card p-4">
+      <h5 class="mb-4"><i class="bi bi-headset me-2 text-green"></i>Open a Support Ticket</h5>
+      <div class="mb-3">
+        <label class="form-label">Subject</label>
+        <select name="subject" class="form-select form-select-lg">
+          <option>Loan application help</option>
+          <option>Payment / STK Push issue</option>
+          <option>Credit limit increase</option>
+          <option>Account &amp; verification</option>
+          <option>Repayment plan</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Message</label>
+        <textarea name="body" class="form-control form-control-lg" rows="6"
+                  placeholder="Tell us how we can help..." required></textarea>
+      </div>
+      <button class="btn btn-grad btn-lg"><i class="bi bi-send me-2"></i>Send to Support</button>
+    </form>
+  </div>
+  <div class="col-lg-5">
+    <div class="card app-card p-4 mb-4">
+      <h6 class="mb-3"><i class="bi bi-question-circle me-2 text-green"></i>Quick Help</h6>
+      <div class="accordion faq-accordion" id="supportFaq">
+        {% set faqs = [
+          ('Why is my STK push pending?', 'Confirm the PIN on your phone. If it failed, tap retry or try again in 5 minutes.'),
+          ('How do I increase my limit?', 'Repay on time to grow your limit automatically, or message support to request a review.'),
+          ('When do I receive funds?', 'Immediately after your STK Push payment confirms — usually under 5 minutes.'),
+          ('What is the service fee?', 'A tiered fee based on the amount you receive — shown before you pay, from KES 150 to KES 3,500.')
+        ] %}
+        {% for q, a in faqs %}
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sf{{ loop.index }}">{{ q }}</button>
+          </h2>
+          <div id="sf{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#supportFaq">
+            <div class="accordion-body">{{ a }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="card app-card p-4">
+      <h6 class="mb-3"><i class="bi bi-telephone me-2 text-green"></i>Talk to Us</h6>
+      <p class="small text-muted">Prefer to call? Our team picks up in seconds.</p>
+      <a href="tel:0700000000" class="btn btn-outline-green w-100 mb-2"><i class="bi bi-telephone me-2"></i>0700 000 000</a>
+      <a href="mailto:support@greenlend.co.ke" class="btn btn-outline-green w-100"><i class="bi bi-envelope me-2"></i>Email Us</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

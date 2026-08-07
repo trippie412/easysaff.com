@@ -1,0 +1,170 @@
+{% extends 'admin_base.html' %}
+{% block active_page %}dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block page_subtitle %}Platform overview at a glance{% endblock %}
+
+{% block app_content %}
+{% from 'partials/_status_badge.html' import status_badge %}
+
+<!-- Stat cards -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-xl-3">
+    <div class="card app-card stat-card p-3">
+      <div class="stat-icon icon-grad-a"><i class="bi bi-people"></i></div>
+      <div>
+        <div class="stat-value" data-counter data-target="{{ stats.total_members }}">{{ stats.total_members }}</div>
+        <div class="stat-label">Total Members</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-xl-3">
+    <div class="card app-card stat-card p-3">
+      <div class="stat-icon icon-grad-b"><i class="bi bi-hourglass-split"></i></div>
+      <div>
+        <div class="stat-value" data-counter data-target="{{ stats.pending_loans }}">{{ stats.pending_loans }}</div>
+        <div class="stat-label">Pending Loans</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-xl-3">
+    <div class="card app-card stat-card p-3">
+      <div class="stat-icon icon-grad-c"><i class="bi bi-wallet2"></i></div>
+      <div>
+        <div class="stat-value" data-counter data-target="{{ stats.active_loans }}">{{ stats.active_loans }}</div>
+        <div class="stat-label">Active Loans</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-xl-3">
+    <div class="card app-card stat-card p-3">
+      <div class="stat-icon icon-grad-d"><i class="bi bi-cash-coin"></i></div>
+      <div>
+        <div class="stat-value" data-counter data-target="{{ stats.total_disbursed }}">{{ stats.total_disbursed|kes }}</div>
+        <div class="stat-label">Total Disbursed</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-xl-3">
+    <div class="card app-card stat-card p-3">
+      <div class="stat-icon icon-grad-e"><i class="bi bi-piggy-bank"></i></div>
+      <div>
+        <div class="stat-value" data-counter data-target="{{ stats.total_repaid }}">{{ stats.total_repaid|kes }}</div>
+        <div class="stat-label">Total Repaid</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-xl-3">
+    <div class="card app-card stat-card p-3">
+      <div class="stat-icon icon-grad-f"><i class="bi bi-receipt-cutoff"></i></div>
+      <div>
+        <div class="stat-value" data-counter data-target="{{ stats.total_fees }}">{{ stats.total_fees|kes }}</div>
+        <div class="stat-label">Fees Collected</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-xl-3">
+    <div class="card app-card stat-card p-3">
+      <div class="stat-icon icon-grad-a"><i class="bi bi-arrow-repeat"></i></div>
+      <div>
+        <div class="stat-value" data-counter data-target="{{ stats.txn_count }}">{{ stats.txn_count }}</div>
+        <div class="stat-label">Transactions</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-xl-3">
+    <div class="card app-card stat-card p-3">
+      <div class="stat-icon icon-grad-b"><i class="bi bi-exclamation-triangle"></i></div>
+      <div>
+        <div class="stat-value text-danger" data-counter data-target="{{ stats.suspended_members }}">{{ stats.suspended_members }}</div>
+        <div class="stat-label">Suspended Members</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="card app-card p-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="mb-0"><i class="bi bi-bar-chart me-2 text-green"></i>Weekly Activity</h6>
+        <span class="badge bg-success-subtle text-success-emphasis">Last 7 days</span>
+      </div>
+      <div class="chart-wrap">
+        <canvas data-chart
+                data-labels='{{ chart.labels|tojson }}'
+                data-values='{{ chart.values|tojson }}'></canvas>
+      </div>
+    </div>
+
+    <div class="card app-card mt-4">
+      <div class="card-header app-card-header">
+        <h6 class="mb-0">Recent Transactions</h6>
+        <a href="{{ url_for('admin.transactions') }}" class="btn btn-sm btn-outline-green">View all</a>
+      </div>
+      <div class="table-responsive">
+        <table class="table app-table align-middle mb-0">
+          <thead>
+            <tr>
+              <th>Reference</th>
+              <th>Member</th>
+              <th class="text-end">Amount</th>
+              <th class="text-center">Type</th>
+              <th class="text-center">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for t in recent_transactions %}
+            <tr>
+              <td class="small text-muted">{{ t.reference }}</td>
+              <td>{{ t.user.full_name() }}</td>
+              <td class="text-end fw-semibold">{{ t.total_amount|kes }}</td>
+              <td class="text-center"><span class="badge bg-light text-dark">{{ t.type|title }}</span></td>
+              <td class="text-center">{{ status_badge(t.status) }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5" class="text-center text-muted py-4">No transactions yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card app-card">
+      <div class="card-header app-card-header">
+        <h6 class="mb-0">Newest Members</h6>
+        <a href="{{ url_for('admin.members') }}" class="btn btn-sm btn-outline-green">View all</a>
+      </div>
+      <div class="list-group list-group-flush">
+        {% for m in recent_members %}
+        <div class="list-group-item d-flex align-items-center gap-3 py-3">
+          <span class="avatar-circle">{{ m.initials() }}</span>
+          <div class="flex-grow-1 min-width-0">
+            <strong class="d-block text-truncate">{{ m.full_name() }}</strong>
+            <small class="text-muted">{{ m.phone }} · Joined {{ m.created_at.strftime('%d %b %Y') }}</small>
+          </div>
+          {% if m.is_verified %}
+            <i class="bi bi-patch-check-fill text-green" title="Verified"></i>
+          {% endif %}
+          <span class="badge {{ 'bg-success-subtle text-success-emphasis' if m.status == 'active' else 'bg-danger-subtle text-danger-emphasis' }}">
+            {{ m.status|title }}
+          </span>
+        </div>
+        {% else %}
+        <div class="list-group-item text-center text-muted py-4">No members yet.</div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="card app-card p-4 mt-4">
+      <h6 class="mb-3"><i class="bi bi-lightning-charge me-2 text-green"></i>Quick Actions</h6>
+      <div class="d-grid gap-2">
+        <a href="{{ url_for('admin.members') }}" class="btn btn-outline-green"><i class="bi bi-people me-2"></i>Review Members</a>
+        <a href="{{ url_for('admin.loans') }}" class="btn btn-outline-green"><i class="bi bi-wallet2 me-2"></i>Approve Pending Loans</a>
+        <a href="{{ url_for('admin.transactions') }}" class="btn btn-outline-green"><i class="bi bi-receipt me-2"></i>Audit Transactions</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block body_class %}auth-body admin-login-body{% endblock %}
+{% block nav %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-blob blob-1"></div>
+  <div class="auth-blob blob-2"></div>
+
+  <div class="auth-card glass-card p-4 p-md-5">
+    <div class="text-center mb-4">
+      <a class="navbar-brand justify-content-center" href="{{ url_for('admin.login') }}">
+        <span class="brand-icon"><i class="bi bi-shield-lock"></i></span>
+        Green<span class="text-green">Lend</span>
+      </a>
+      <h1 class="h4 mt-3 mb-1">Admin Console</h1>
+      <p class="text-muted small mb-0">Restricted area — staff only</p>
+    </div>
+
+    {% include 'partials/_flash.html' %}
+
+    <form method="post" novalidate>
+      {{ form.hidden_tag() }}
+      <div class="mb-3">
+        <label class="form-label">Phone Number</label>
+        <div class="input-group input-group-lg">
+          <span class="input-group-text"><i class="bi bi-phone"></i></span>
+          {{ form.phone(class="form-control", placeholder="0700 000 000", inputmode="numeric", autofocus=true) }}
+        </div>
+        {% for e in form.phone.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="mb-4">
+        <label class="form-label">Password</label>
+        <div class="input-group input-group-lg">
+          <span class="input-group-text"><i class="bi bi-lock"></i></span>
+          {{ form.password(class="form-control", placeholder="••••••••") }}
+          <button class="btn btn-outline-secondary password-toggle" type="button" tabindex="-1">
+            <i class="bi bi-eye"></i>
+          </button>
+        </div>
+        {% for e in form.password.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+      </div>
+      <button class="btn btn-grad btn-lg w-100" type="submit">
+        <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+      </button>
+    </form>
+
+    <div class="alert alert-demo mt-4 mb-0 small">
+      <strong>Demo credentials</strong><br>
+      Phone: <code>0700000000</code> · Password: <code>Admin@123</code>
+    </div>
+  </div>
+</div>
+{% endblock %}

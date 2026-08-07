@@ -1,0 +1,28 @@
+{% macro product_card(p, idx, btn_label='View Details', btn_url=None) %}
+{% set palettes = ['grad-a', 'grad-b', 'grad-c', 'grad-d'] %}
+<div class="col-md-6 col-lg-4 d-flex product-col" data-category="{{ p.category }}">
+  <div class="card product-card w-100">
+    <div class="product-cover {{ palettes[idx % 4] }}">
+      <i class="bi {{ p.icon }}"></i>
+      <span class="product-cat">{{ p.category }}</span>
+    </div>
+    <div class="card-body">
+      <h3 class="product-name">{{ p.name }}</h3>
+      <p class="product-tagline">{{ p.tagline }}</p>
+      <ul class="benefit-list">
+        {% for b in p.benefits[:3] %}
+          <li><i class="bi bi-check-circle-fill"></i>{{ b }}</li>
+        {% endfor %}
+      </ul>
+      <div class="product-meta">
+        <span><i class="bi bi-percent"></i> {{ p.interest }}</span>
+        <span><i class="bi bi-calendar-check"></i> {{ p.repayment }}</span>
+      </div>
+    </div>
+    <div class="card-footer bg-transparent border-0 pb-3 pt-0">
+      <a href="{{ btn_url or url_for('main.product_detail', slug=p.slug) }}"
+         class="btn btn-grad w-100">{{ btn_label }}</a>
+    </div>
+  </div>
+</div>
+{% endmacro %}

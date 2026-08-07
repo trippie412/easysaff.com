@@ -1,0 +1,89 @@
+.
+├── app
+│   ├── extensions.py
+│   ├── forms
+│   │   ├── admin.py
+│   │   ├── auth.py
+│   │   ├── __init__.py
+│   │   └── loan.py
+│   ├── __init__.py
+│   ├── models
+│   │   ├── communication.py
+│   │   ├── __init__.py
+│   │   ├── loan.py
+│   │   ├── transaction.py
+│   │   └── user.py
+│   ├── routes
+│   │   ├── admin.py
+│   │   ├── auth.py
+│   │   ├── dashboard.py
+│   │   ├── __init__.py
+│   │   ├── loans.py
+│   │   ├── main.py
+│   │   └── payments.py
+│   ├── seed.py
+│   ├── services
+│   │   ├── eligibility.py
+│   │   ├── fees.py
+│   │   ├── __init__.py
+│   │   ├── mpesa.py
+│   │   ├── products.py
+│   │   └── verification.py
+│   ├── static
+│   │   ├── css
+│   │   │   └── style.css
+│   │   ├── images
+│   │   └── js
+│   │       └── main.js
+│   └── templates
+│       ├── admin
+│       │   ├── dashboard.html
+│       │   ├── loans.html
+│       │   ├── login.html
+│       │   ├── member_deposit.html
+│       │   ├── member_edit.html
+│       │   ├── members.html
+│       │   ├── _sidebar.html
+│       │   └── transactions.html
+│       ├── admin_base.html
+│       ├── auth
+│       │   ├── forgot_password.html
+│       │   ├── login.html
+│       │   ├── register.html
+│       │   └── verify.html
+│       ├── base.html
+│       ├── dashboard
+│       │   ├── index.html
+│       │   ├── loans.html
+│       │   ├── message_detail.html
+│       │   ├── messages.html
+│       │   ├── notifications.html
+│       │   ├── profile.html
+│       │   ├── settings.html
+│       │   └── support.html
+│       ├── dashboard_base.html
+│       ├── landing.html
+│       ├── loans
+│       │   ├── apply_form.html
+│       │   ├── apply.html
+│       │   └── result.html
+│       ├── partials
+│       │   ├── _app_sidebar.html
+│       │   ├── _flash.html
+│       │   ├── _footer.html
+│       │   ├── _nav.html
+│       │   ├── _product_card.html
+│       │   └── _status_badge.html
+│       ├── payments
+│       │   ├── deposit.html
+│       │   └── stk.html
+│       ├── product_detail.html
+│       └── services.html
+├── config.py
+├── instance
+│   └── portal.db
+├── requirements.txt
+├── run.py
+└── structure.txt
+
+18 directories, 69 files

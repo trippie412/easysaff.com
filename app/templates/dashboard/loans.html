@@ -1,0 +1,59 @@
+{% extends 'dashboard_base.html' %}
+{% block active_page %}loans{% endblock %}
+{% block page_title %}Loan Applications{% endblock %}
+{% block page_subtitle %}Track, review and manage your loans{% endblock %}
+
+{% block app_content %}
+{% from 'partials/_status_badge.html' import status_badge %}
+{% set current_status = request.args.get('status', '') %}
+
+<div class="card app-card">
+  <div class="card-header app-card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div class="d-flex flex-wrap gap-2">
+      <a href="{{ url_for('dashboard.loans') }}" class="btn btn-sm {{ 'btn-grad' if not current_status else 'btn-light' }}">All</a>
+      {% for s in ['pending', 'approved', 'disbursed', 'repaying', 'paid', 'rejected'] %}
+      <a href="{{ url_for('dashboard.loans', status=s) }}" class="btn btn-sm {{ 'btn-grad' if current_status == s else 'btn-light' }}">
+        {{ s|title }}
+      </a>
+      {% endfor %}
+    </div>
+    <a href="{{ url_for('loans.apply') }}" class="btn btn-sm btn-outline-green">
+      <i class="bi bi-plus-lg me-1"></i>New Application
+    </a>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table app-table align-middle mb-0">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th class="text-end">You Receive</th>
+          <th class="text-end">Service Fee</th>
+          <th class="text-end">Total to Pay</th>
+          <th>Applied</th>
+          <th class="text-center">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for l in items %}
+        {% if not current_status or l.status == current_status %}
+        <tr>
+          <td>
+            <strong class="d-block">{{ l.product_name }}</strong>
+            <small class="text-muted">Ref #{{ '%06d' % l.id }}</small>
+          </td>
+          <td class="text-end fw-semibold">{{ l.amount|kes }}</td>
+          <td class="text-end text-muted">{{ l.service_fee|kes }}</td>
+          <td class="text-end fw-semibold text-green">{{ l.total_to_pay|kes }}</td>
+          <td class="text-muted small">{{ l.created_at.strftime('%d %b %Y') }}</td>
+          <td class="text-center">{{ status_badge(l.status) }}</td>
+        </tr>
+        {% endif %}
+        {% else %}
+        <tr><td colspan="6" class="text-center text-muted py-5">No loan applications found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

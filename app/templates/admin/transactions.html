@@ -1,0 +1,67 @@
+{% extends 'admin_base.html' %}
+{% block active_page %}transactions{% endblock %}
+{% block page_title %}Transactions{% endblock %}
+{% block page_subtitle %}Complete platform ledger{% endblock %}
+
+{% block app_content %}
+{% from 'partials/_status_badge.html' import status_badge %}
+{% set current_type = request.args.get('type', '') %}
+{% set current_status = request.args.get('status', '') %}
+
+<div class="card app-card">
+  <div class="card-header app-card-header flex-wrap gap-2">
+    <div class="d-flex flex-wrap gap-2 align-items-center">
+      <span class="small text-muted me-1">Type:</span>
+      <a href="{{ url_for('admin.transactions', status=current_status) }}" class="btn btn-sm {{ 'btn-grad' if not current_type else 'btn-light' }}">All</a>
+      {% for t in ['loan_fee', 'deposit', 'repayment'] %}
+      <a href="{{ url_for('admin.transactions', type=t, status=current_status) }}" class="btn btn-sm {{ 'btn-grad' if current_type == t else 'btn-light' }}">
+        {{ t|replace('_', ' ')|title }}
+      </a>
+      {% endfor %}
+      <span class="small text-muted ms-2 me-1">Status:</span>
+      <a href="{{ url_for('admin.transactions', type=current_type) }}" class="btn btn-sm {{ 'btn-grad' if not current_status else 'btn-light' }}">All</a>
+      {% for s in ['pending', 'completed', 'failed'] %}
+      <a href="{{ url_for('admin.transactions', type=current_type, status=s) }}" class="btn btn-sm {{ 'btn-grad' if current_status == s else 'btn-light' }}">
+        {{ s|title }}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table app-table align-middle mb-0">
+      <thead>
+        <tr>
+          <th>Reference</th>
+          <th>Member</th>
+          <th class="text-center">Type</th>
+          <th class="text-end">Receive</th>
+          <th class="text-end">Fee</th>
+          <th class="text-end">Total</th>
+          <th class="text-center">Status</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for t in transactions %}
+        <tr>
+          <td class="small text-muted">{{ t.reference }}</td>
+          <td>
+            <strong class="d-block">{{ t.user.full_name() }}</strong>
+            <small class="text-muted">{{ t.user.phone }}</small>
+          </td>
+          <td class="text-center"><span class="badge bg-light text-dark">{{ t.type|replace('_', ' ')|title }}</span></td>
+          <td class="text-end fw-semibold">{{ t.receive_amount|kes }}</td>
+          <td class="text-end text-muted">{{ t.service_fee|kes }}</td>
+          <td class="text-end fw-semibold text-green">{{ t.total_amount|kes }}</td>
+          <td class="text-center">{{ status_badge(t.status) }}</td>
+          <td class="small text-muted">{{ t.created_at.strftime('%d %b %Y, %H:%M') }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="8" class="text-center text-muted py-5">No transactions found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

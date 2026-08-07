@@ -1,0 +1,83 @@
+{% extends 'admin_base.html' %}
+{% block active_page %}members{% endblock %}
+{% block page_title %}Members{% endblock %}
+{% block page_subtitle %}Search, verify and manage all members{% endblock %}
+
+{% block app_content %}
+{% set current_status = request.args.get('status', '') %}
+
+<div class="card app-card">
+  <div class="card-header app-card-header flex-wrap gap-2">
+    <div class="d-flex flex-wrap gap-2">
+      <a href="{{ url_for('admin.members') }}" class="btn btn-sm {{ 'btn-grad' if not current_status else 'btn-light' }}">All</a>
+      {% for s in ['active', 'suspended', 'pending'] %}
+      <a href="{{ url_for('admin.members', status=s) }}" class="btn btn-sm {{ 'btn-grad' if current_status == s else 'btn-light' }}">
+        {{ s|title }}
+      </a>
+      {% endfor %}
+    </div>
+    <form method="get" class="d-flex gap-2" action="{{ url_for('admin.members') }}">
+      <input type="search" name="q" class="form-control form-control-sm" style="max-width: 220px;"
+             placeholder="Search phone or name…" value="{{ request.args.get('q', '') }}">
+      <button class="btn btn-sm btn-outline-green"><i class="bi bi-search"></i></button>
+    </form>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table app-table align-middle mb-0">
+      <thead>
+        <tr>
+          <th>Member</th>
+          <th>Phone</th>
+          <th class="text-center">Verified</th>
+          <th class="text-end">Credit Limit</th>
+          <th>Joined</th>
+          <th class="text-center">Status</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for m in members %}
+        <tr>
+          <td>
+            <div class="d-flex align-items-center gap-2">
+              <span class="avatar-circle avatar-sm">{{ m.initials() }}</span>
+              <div>
+                <strong class="d-block">{{ m.full_name() }}</strong>
+                <small class="text-muted">{{ m.email or '—' }}</small>
+              </div>
+            </div>
+          </td>
+          <td class="small">{{ m.phone }}</td>
+          <td class="text-center">
+            {% if m.is_verified %}
+              <i class="bi bi-patch-check-fill text-green fs-5" title="Verified"></i>
+            {% else %}
+              <i class="bi bi-patch-question text-muted fs-5" title="Not verified"></i>
+            {% endif %}
+          </td>
+          <td class="text-end fw-semibold">{{ m.credit_limit|kes }}</td>
+          <td class="small text-muted">{{ m.created_at.strftime('%d %b %Y') }}</td>
+          <td class="text-center">
+            <span class="badge {{ 'bg-success-subtle text-success-emphasis' if m.status == 'active' else 'bg-danger-subtle text-danger-emphasis' }}">
+              {{ m.status|title }}
+            </span>
+            {% if m.is_admin %}<span class="badge bg-dark text-white ms-1">Admin</span>{% endif %}
+          </td>
+          <td class="text-end">
+            <a href="{{ url_for('admin.member_edit', member_id=m.id) }}" class="btn btn-sm btn-outline-green">
+              <i class="bi bi-pencil"></i>
+            </a>
+            <a href="{{ url_for('admin.member_deposit', member_id=m.id) }}" class="btn btn-sm btn-light" title="Deposit for member">
+              <i class="bi bi-plus-circle"></i>
+            </a>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7" class="text-center text-muted py-5">No members found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

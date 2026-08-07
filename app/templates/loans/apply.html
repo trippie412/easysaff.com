@@ -1,0 +1,27 @@
+{% extends 'dashboard_base.html' %}
+{% from 'partials/_product_card.html' import product_card %}
+{% block active_page %}loans{% endblock %}
+{% block page_title %}Apply for a Loan{% endblock %}
+{% block page_subtitle %}Step 1 of 3 — choose your product{% endblock %}
+
+{% block app_content %}
+<div class="card app-card p-3 mb-4">
+  <div class="row g-3 align-items-center">
+    <div class="col-auto d-none d-md-block">
+      <span class="step-badge done"><i class="bi bi-check-lg"></i></span>
+    </div>
+    <div class="col">
+      <div class="progress" style="height: 8px;">
+        <div class="progress-bar grad-bar" style="width: 33%"></div>
+      </div>
+      <small class="text-muted">Step 1 · Choose Product &nbsp;→&nbsp; 2 · Details &amp; Verification &nbsp;→&nbsp; 3 · Pay via M-PESA</small>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  {% for p in products %}
+    {{ product_card(p, loop.index0, btn_label='Apply Now', btn_url=url_for('loans.apply_product', slug=p.slug)) }}
+  {% endfor %}
+</div>
+{% endblock %}

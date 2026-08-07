@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-3">
+        <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}" class="text-white-50">Home</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('main.services') }}" class="text-white-50">Services</a></li>
+        <li class="breadcrumb-item active text-white" aria-current="page">{{ product.name }}</li>
+      </ol>
+    </nav>
+    <div class="row align-items-center g-4">
+      <div class="col-lg-8">
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <span class="detail-icon grad-a"><i class="bi {{ product.icon }}"></i></span>
+          <div>
+            <span class="badge bg-white bg-opacity-25 text-white mb-1">{{ product.category }}</span>
+            <h1 class="text-white mb-0">{{ product.name }}</h1>
+          </div>
+        </div>
+        <p class="lead text-white-50 mb-0">{{ product.tagline }}</p>
+      </div>
+      <div class="col-lg-4 text-lg-end">
+        <a href="{{ url_for('loans.apply_product', slug=product.slug) if current_user.is_authenticated else url_for('auth.login') }}"
+           class="btn btn-light btn-lg text-green"><i class="bi bi-rocket-takeoff me-2"></i>Apply Now</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div class="card form-card p-4 p-md-5 mb-4">
+          <h3 class="mb-3">About {{ product.name }}</h3>
+          <p>{{ product.description }}</p>
+
+          <h5 class="mt-4 mb-3"><i class="bi bi-stars text-green me-2"></i>Benefits</h5>
+          <ul class="benefit-list detail-list">
+            {% for b in product.benefits %}
+              <li><i class="bi bi-check-circle-fill"></i>{{ b }}</li>
+            {% endfor %}
+          </ul>
+
+          <h5 class="mt-4 mb-3"><i class="bi bi-clipboard-check text-green me-2"></i>Requirements</h5>
+          <ul class="benefit-list detail-list">
+            {% for r in product.requirements %}
+              <li><i class="bi bi-shield-check"></i>{{ r }}</li>
+            {% endfor %}
+          </ul>
+
+          <div class="row g-3 mt-2">
+            <div class="col-md-6">
+              <div class="info-tile glass">
+                <i class="bi bi-percent"></i>
+                <small>Sample Interest</small>
+                <strong>{{ product.interest }}</strong>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="info-tile glass">
+                <i class="bi bi-calendar-check"></i>
+                <small>Repayment Period</small>
+                <strong>{{ product.repayment }}</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert alert-info d-flex gap-3 mt-4 mb-0 align-items-start">
+            <i class="bi bi-info-circle-fill fs-5"></i>
+            <div>
+              <strong>Transparent fees.</strong> Service fees follow a published tiered table
+              (KES 150 – KES 3,500). You'll see the exact breakdown before you pay.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card form-card p-4 mb-4">
+          <h5 class="mb-3">Why choose this product?</h5>
+          <ul class="benefit-list small-list">
+            <li><i class="bi bi-clock-history"></i>Application takes under 2 minutes</li>
+            <li><i class="bi bi-phone"></i>Disbursed via M-PESA</li>
+            <li><i class="bi bi-shield-lock"></i>Secure &amp; encrypted</li>
+            <li><i class="bi bi-headset"></i>24/7 support</li>
+          </ul>
+          <a href="{{ url_for('loans.apply_product', slug=product.slug) if current_user.is_authenticated else url_for('auth.login') }}"
+             class="btn btn-grad w-100 btn-lg mt-2">Apply for {{ product.name }}</a>
+        </div>
+
+        <div class="card form-card p-4">
+          <h5 class="mb-3"><i class="bi bi-life-preserver text-green me-2"></i>Need help?</h5>
+          <p class="small text-muted mb-3">Our team is online 24/7. Reach us on 0700 000 000 or
+            <a href="{{ url_for('dashboard.support') if current_user.is_authenticated else url_for('auth.login') }}">open a support ticket</a>.</p>
+          <a href="tel:0700000000" class="btn btn-outline-green w-100"><i class="bi bi-telephone me-2"></i>Call Support</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card form-card p-4 p-md-5 mt-4">
+      <h4 class="mb-4">Product FAQ</h4>
+      <div class="accordion faq-accordion" id="productFaq">
+        {% for f in faqs %}
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button {{ 'collapsed' if not loop.first }}" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#pf{{ loop.index }}">{{ f.q }}</button>
+          </h2>
+          <div id="pf{{ loop.index }}" class="accordion-collapse collapse {{ 'show' if loop.first }}"
+               data-bs-parent="#productFaq">
+            <div class="accordion-body">{{ f.a }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

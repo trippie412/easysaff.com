@@ -1,0 +1,87 @@
+{% extends 'admin_base.html' %}
+{% block active_page %}members{% endblock %}
+{% block page_title %}Edit Member{% endblock %}
+{% block page_subtitle %}{{ member.full_name() }} · {{ member.phone }}{% endblock %}
+
+{% block app_content %}
+<div class="row g-4 justify-content-center">
+  <div class="col-lg-8">
+    <form method="post" class="card app-card p-4">
+      {{ form.hidden_tag() }}
+      <h5 class="mb-4"><i class="bi bi-person-gear me-2 text-green"></i>Member Details</h5>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Full Name</label>
+          {{ form.name(class="form-control form-control-lg") }}
+          {% for e in form.name.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Email Address</label>
+          {{ form.email(class="form-control form-control-lg", type="email") }}
+          {% for e in form.email.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Phone Number</label>
+          <input type="text" class="form-control form-control-lg" value="{{ member.phone }}" disabled>
+          <small class="text-muted">Phone is the login identifier and cannot be changed here.</small>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Status</label>
+          {{ form.status(class="form-select form-select-lg") }}
+          <small class="text-muted">Suspended members cannot apply for loans.</small>
+          {% for e in form.status.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Credit Limit (KES)</label>
+          {{ form.credit_limit(class="form-control form-control-lg", inputmode="numeric") }}
+          <small class="text-muted">Maximum amount a member may receive per loan.</small>
+          {% for e in form.credit_limit.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="col-md-6 d-flex align-items-end">
+          <div class="d-flex gap-4 w-100 pb-2">
+            <div class="form-check form-switch">
+              {{ form.is_verified(class="form-check-input") }}
+              <label class="form-check-label" for="is_verified">Identity Verified</label>
+            </div>
+            <div class="form-check form-switch">
+              {{ form.is_admin(class="form-check-input") }}
+              <label class="form-check-label" for="is_admin">Admin Access</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex gap-3 mt-4 flex-wrap">
+        <button class="btn btn-grad btn-lg flex-grow-1" type="submit">
+          <i class="bi bi-check-lg me-2"></i>Save Changes
+        </button>
+        <a href="{{ url_for('admin.members') }}" class="btn btn-light btn-lg">Cancel</a>
+      </div>
+    </form>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card app-card p-4 mb-4">
+      <h6 class="mb-3"><i class="bi bi-shield-check me-2 text-green"></i>Member Summary</h6>
+      <div class="d-flex align-items-center gap-3 mb-3">
+        <span class="avatar-circle avatar-lg">{{ member.initials() }}</span>
+        <div>
+          <strong class="d-block">{{ member.full_name() }}</strong>
+          <small class="text-muted">{{ member.phone }}</small>
+        </div>
+      </div>
+      <hr>
+      <div class="fee-row"><span>Credit Limit</span><strong>{{ member.credit_limit|kes }}</strong></div>
+      <div class="fee-row"><span>Loans Taken</span><strong>{{ member.loans|length }}</strong></div>
+      <div class="fee-row"><span>Status</span>
+        <strong class="{{ 'text-green' if member.status == 'active' else 'text-danger' }}">{{ member.status|title }}</strong>
+      </div>
+      <div class="fee-row"><span>Joined</span><strong class="small">{{ member.created_at.strftime('%d %b %Y') }}</strong></div>
+    </div>
+    <a href="{{ url_for('admin.member_deposit', member_id=member.id) }}" class="btn btn-outline-green w-100">
+      <i class="bi bi-plus-circle me-2"></i>Deposit for this Member
+    </a>
+  </div>
+</div>
+{% endblock %}

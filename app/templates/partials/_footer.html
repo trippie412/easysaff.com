@@ -1,0 +1,61 @@
+<footer class="site-footer">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <a class="navbar-brand mb-3" href="{{ url_for('main.index') }}">
+          <span class="brand-icon"><i class="bi bi-bank2"></i></span>
+          Green<span class="text-green">Lend</span>
+        </a>
+        <p class="footer-text">
+          Secure, affordable digital lending and savings for everyone.
+          Regulated, transparent and built for mobile-first customers.
+        </p>
+        <div class="social-row">
+          <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+          <a href="#" aria-label="X"><i class="bi bi-twitter-x"></i></a>
+          <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+        </div>
+      </div>
+      <div class="col-6 col-lg-2">
+        <h5>Products</h5>
+        <ul class="footer-links">
+          <li><a href="{{ url_for('main.product_detail', slug='m-shwari') }}">M-Shwari</a></li>
+          <li><a href="{{ url_for('main.product_detail', slug='fuliza') }}">Fuliza M-PESA</a></li>
+          <li><a href="{{ url_for('main.product_detail', slug='hustler-fund') }}">Hustler Fund</a></li>
+          <li><a href="{{ url_for('main.product_detail', slug='ziidi') }}">Ziidi Fund</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-lg-2">
+        <h5>Company</h5>
+        <ul class="footer-links">
+          <li><a href="{{ url_for('main.index') }}#about">About Us</a></li>
+          <li><a href="{{ url_for('main.services') }}">All Services</a></li>
+          <li><a href="{{ url_for('main.index') }}#faq">FAQ</a></li>
+          <li><a href="{{ url_for('main.index') }}#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4">
+        <h5>Get in Touch</h5>
+        <ul class="footer-contact">
+          <li><i class="bi bi-telephone-fill"></i> 0700 000 000</li>
+          <li><i class="bi bi-envelope-fill"></i> hello@greenlend.co.ke</li>
+          <li><i class="bi bi-geo-alt-fill"></i> Nairobi, Kenya</li>
+        </ul>
+        <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Subscribed (mock).');">
+          <div class="input-group">
+            <input type="email" class="form-control" placeholder="Your email" required>
+            <button class="btn btn-grad" type="submit"><i class="bi bi-send-fill"></i></button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <hr class="footer-hr">
+    <div class="footer-bottom">
+      <span>© 2014 GreenLend Financial Services. All rights reserved.</span>
+      <span class="footer-links-inline">
+        <a href="#">Privacy</a> · <a href="#">Terms</a> · <a href="#">Licenses</a>
+      </span>
+    </div>
+  </div>
+</footer>

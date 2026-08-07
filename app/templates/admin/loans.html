@@ -1,0 +1,71 @@
+{% extends 'admin_base.html' %}
+{% block active_page %}loans{% endblock %}
+{% block page_title %}Loans{% endblock %}
+{% block page_subtitle %}Review applications and manage lifecycle{% endblock %}
+
+{% block app_content %}
+{% from 'partials/_status_badge.html' import status_badge %}
+{% set current_status = request.args.get('status', '') %}
+
+<div class="card app-card">
+  <div class="card-header app-card-header flex-wrap gap-2">
+    <div class="d-flex flex-wrap gap-2">
+      <a href="{{ url_for('admin.loans') }}" class="btn btn-sm {{ 'btn-grad' if not current_status else 'btn-light' }}">All</a>
+      {% for s in ['pending', 'approved', 'rejected', 'disbursed', 'repaying', 'paid'] %}
+      <a href="{{ url_for('admin.loans', status=s) }}" class="btn btn-sm {{ 'btn-grad' if current_status == s else 'btn-light' }}">
+        {{ s|title }}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table app-table align-middle mb-0">
+      <thead>
+        <tr>
+          <th>Ref</th>
+          <th>Member</th>
+          <th>Product</th>
+          <th class="text-end">Receive</th>
+          <th class="text-end">Fee</th>
+          <th class="text-end">Total</th>
+          <th>Applied</th>
+          <th class="text-center">Status</th>
+          <th class="text-end">Update</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for l in loans %}
+        <tr>
+          <td class="small text-muted">#{{ '%06d' % l.id }}</td>
+          <td>
+            <strong class="d-block">{{ l.user.full_name() }}</strong>
+            <small class="text-muted">{{ l.user.phone }}</small>
+          </td>
+          <td class="small">{{ l.product_name }}</td>
+          <td class="text-end fw-semibold">{{ l.amount|kes }}</td>
+          <td class="text-end text-muted">{{ l.service_fee|kes }}</td>
+          <td class="text-end fw-semibold text-green">{{ l.total_to_pay|kes }}</td>
+          <td class="small text-muted">{{ l.created_at.strftime('%d %b %Y, %H:%M') }}</td>
+          <td class="text-center">{{ status_badge(l.status) }}</td>
+          <td class="text-end">
+            <form method="post" action="{{ url_for('admin.loan_status', loan_id=l.id) }}"
+                  class="d-inline-flex gap-1 align-items-center"
+                  data-confirm="Move loan #{{ '%06d' % l.id }} to the selected status?">
+              <select name="status" class="form-select form-select-sm d-inline-block" style="width: auto;">
+                {% for s in ['pending', 'approved', 'rejected', 'disbursed', 'repaying', 'paid'] %}
+                <option value="{{ s }}" {{ 'selected' if s == l.status }}>{{ s|title }}</option>
+                {% endfor %}
+              </select>
+              <button class="btn btn-sm btn-grad"><i class="bi bi-arrow-right"></i></button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="9" class="text-center text-muted py-5">No loans found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

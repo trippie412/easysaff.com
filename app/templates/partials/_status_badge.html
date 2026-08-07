@@ -1,0 +1,15 @@
+{% macro status_badge(status) -%}
+{%- set classes = {
+  'pending': 'bg-warning-subtle text-warning-emphasis',
+  'approved': 'bg-info-subtle text-info-emphasis',
+  'rejected': 'bg-danger-subtle text-danger-emphasis',
+  'disbursed': 'bg-primary-subtle text-primary-emphasis',
+  'repaying': 'bg-secondary-subtle text-secondary-emphasis',
+  'paid': 'bg-success-subtle text-success-emphasis',
+  'completed': 'bg-success-subtle text-success-emphasis',
+  'failed': 'bg-danger-subtle text-danger-emphasis',
+  'eligible': 'bg-success-subtle text-success-emphasis',
+  'not_eligible': 'bg-danger-subtle text-danger-emphasis',
+} -%}
+<span class="badge status-badge {{ classes.get(status, 'bg-light text-dark') }}">{{ status|replace('_', ' ')|title }}</span>
+{%- endmacro %}

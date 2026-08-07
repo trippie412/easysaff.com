@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block title %}Create Account{% endblock %}
+{% block body_class %}auth-page{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-card glass auth-card-lg">
+    <div class="auth-head text-center mb-4">
+      <a class="navbar-brand justify-content-center" href="{{ url_for('main.index') }}">
+        <span class="brand-icon"><i class="bi bi-bank2"></i></span>
+        Green<span class="text-green">Lend</span>
+      </a>
+      <h1 class="h3 mt-3">Create your account</h1>
+      <p class="text-muted">Takes less than 2 minutes</p>
+    </div>
+
+    <form method="post" novalidate>
+      {{ form.hidden_tag() }}
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">First Name</label>
+          {{ form.first_name(class="form-control form-control-lg", placeholder="Jane") }}
+          {% for e in form.first_name.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Last Name</label>
+          {{ form.last_name(class="form-control form-control-lg", placeholder="Doe") }}
+          {% for e in form.last_name.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Phone Number</label>
+          <div class="input-group">
+            <span class="input-group-text">+254</span>
+            {{ form.phone(class="form-control form-control-lg", placeholder="712 345 678", inputmode="numeric") }}
+          </div>
+          <small class="text-muted">Format: 07XX XXX XXX</small>
+          {% for e in form.phone.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Email Address</label>
+          {{ form.email(class="form-control form-control-lg", placeholder="jane@email.com", type="email") }}
+          {% for e in form.email.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="col-12">
+          <label class="form-label">National ID Number</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-person-vcard"></i></span>
+            {{ form.national_id(class="form-control form-control-lg", placeholder="7–8 digits, e.g. 29876543", inputmode="numeric") }}
+          </div>
+          <small class="text-muted">Sample format: 7 to 8 digits (mock verification accepts any valid format)</small>
+          {% for e in form.national_id.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Password</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-lock"></i></span>
+            {{ form.password(class="form-control form-control-lg", placeholder="Min. 8 characters") }}
+          </div>
+          {% for e in form.password.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Confirm Password</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+            {{ form.confirm_password(class="form-control form-control-lg", placeholder="Repeat password") }}
+          </div>
+          {% for e in form.confirm_password.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="col-12">
+          <div class="form-check">
+            {{ form.accept_terms(class="form-check-input") }}
+            <label class="form-check-label" for="accept_terms">
+              I accept the <a href="#" class="text-green">Terms &amp; Conditions</a> and
+              <a href="#" class="text-green">Privacy Policy</a>
+            </label>
+          </div>
+          {% for e in form.accept_terms.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+        </div>
+      </div>
+      <button class="btn btn-grad btn-lg w-100 mt-4" type="submit">
+        <i class="bi bi-send-check me-2"></i>Send Verification Code
+      </button>
+    </form>
+
+    <p class="text-center mt-4 mb-0 small">
+      Already have an account? <a href="{{ url_for('auth.login') }}" class="text-green fw-semibold">Log in</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

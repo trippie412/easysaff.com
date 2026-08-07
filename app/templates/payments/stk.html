@@ -1,0 +1,73 @@
+{% extends 'dashboard_base.html' %}
+{% block active_page %}dashboard{% endblock %}
+{% block page_title %}M-PESA Payment{% endblock %}
+{% block page_subtitle %}Confirm via STK Push{% endblock %}
+
+{% block app_content %}
+<div class="row g-4 justify-content-center">
+  <div class="col-lg-5">
+    <div class="stk-phone mx-auto">
+      <div class="stk-screen" id="stkScreen">
+
+        <!-- Processing -->
+        <div class="stk-status stk-processing d-flex flex-column align-items-center justify-content-center text-center" id="stkProcessing">
+          <div class="stk-spinner mb-3"><div class="spinner-border text-white" role="status"></div></div>
+          <h4 class="text-white mb-2">Processing...</h4>
+          <p class="text-white-50 small mb-3">
+            Enter your M-PESA PIN on your phone to confirm a payment of
+            <strong class="text-white">{{ txn.total_amount|kes }}</strong> to <strong class="text-white">GREENLEND</strong>
+          </p>
+          <span class="badge bg-white bg-opacity-25 text-white">Ref: {{ txn.reference }}</span>
+        </div>
+
+        <!-- Success -->
+        <div class="stk-status stk-success d-none flex-column align-items-center justify-content-center text-center" id="stkSuccess">
+          <div class="stk-result-icon success mb-3"><i class="bi bi-check-lg"></i></div>
+          <h4 class="text-white mb-2">Payment Successful</h4>
+          <p class="text-white-50 small mb-1">You paid <strong class="text-white">{{ txn.total_amount|kes }}</strong></p>
+          <p class="text-white-50 small mb-3">You receive <strong class="text-white">{{ txn.receive_amount|kes }}</strong> · Fee {{ txn.service_fee|kes }}</p>
+          <span class="badge bg-white bg-opacity-25 text-white mb-3">Ref: {{ txn.reference }}</span>
+          <a href="{{ url_for('dashboard.loans') if txn.loan_id else url_for('dashboard.index') }}" class="btn btn-light btn-sm">
+            View My Loans <i class="bi bi-arrow-right ms-1"></i>
+          </a>
+        </div>
+
+        <!-- Failed -->
+        <div class="stk-status stk-failed d-none flex-column align-items-center justify-content-center text-center" id="stkFailed">
+          <div class="stk-result-icon danger mb-3"><i class="bi bi-x-lg"></i></div>
+          <h4 class="text-white mb-2">Payment Failed</h4>
+          <p class="text-white-50 small mb-3">The STK push was declined or timed out. You can retry safely.</p>
+          <form method="post" action="{{ url_for('payments.stk_retry', transaction_id=txn.id) }}">
+            <button class="btn btn-light btn-sm"><i class="bi bi-arrow-clockwise me-1"></i>Retry Payment</button>
+          </form>
+        </div>
+
+      </div>
+      <div class="stk-notch"></div>
+      <div class="stk-label">M-PESA</div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card app-card p-4 mb-4">
+      <h6 class="mb-3"><i class="bi bi-receipt me-2 text-green"></i>Payment Breakdown</h6>
+      <div class="fee-row"><span>You Receive</span><strong>{{ txn.receive_amount|kes }}</strong></div>
+      <div class="fee-row"><span>Service Fee</span><strong class="text-muted">{{ txn.service_fee|kes }}</strong></div>
+      <hr>
+      <div class="fee-row fee-total"><span>Total To Pay</span><strong class="text-green">{{ txn.total_amount|kes }}</strong></div>
+      <p class="small text-muted mt-3 mb-0"><i class="bi bi-info-circle me-1"></i>This is the exact amount charged to your M-PESA — no hidden fees.</p>
+    </div>
+    <div class="card app-card p-4">
+      <h6 class="mb-3"><i class="bi bi-question-circle me-2 text-green"></i>Having trouble?</h6>
+      <p class="small text-muted">Ensure your M-PESA PIN is correct and the number <strong>{{ txn.phone }}</strong> is active.</p>
+      <a href="{{ url_for('dashboard.support') }}" class="btn btn-outline-green w-100 btn-sm">Contact Support</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  window.STK_STATUS_URL = "{{ url_for('payments.stk_status', transaction_id=txn.id) }}";
+</script>
+{% endblock %}

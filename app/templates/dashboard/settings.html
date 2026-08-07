@@ -1,0 +1,45 @@
+{% extends 'dashboard_base.html' %}
+{% block active_page %}settings{% endblock %}
+{% block page_title %}Settings{% endblock %}
+{% block page_subtitle %}Security &amp; account settings{% endblock %}
+
+{% block app_content %}
+<div class="row g-4">
+  <div class="col-lg-6">
+    <form method="post" class="card app-card p-4">
+      <h5 class="mb-1"><i class="bi bi-shield-lock me-2 text-green"></i>Change Password</h5>
+      <p class="text-muted small mb-4">Use at least 8 characters with a mix of letters and numbers.</p>
+      <div class="mb-3">
+        <label class="form-label">Current Password</label>
+        <input type="password" name="current_password" class="form-control form-control-lg" required autocomplete="current-password">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">New Password</label>
+        <input type="password" name="new_password" class="form-control form-control-lg" required autocomplete="new-password" minlength="8">
+      </div>
+      <div class="mb-4">
+        <label class="form-label">Confirm New Password</label>
+        <input type="password" name="confirm_password" class="form-control form-control-lg" required autocomplete="new-password" minlength="8">
+      </div>
+      <button class="btn btn-grad btn-lg w-100"><i class="bi bi-arrow-repeat me-2"></i>Update Password</button>
+    </form>
+  </div>
+  <div class="col-lg-6">
+    <div class="card app-card p-4">
+      <h5 class="mb-3"><i class="bi bi-info-circle me-2 text-green"></i>Account Summary</h5>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Account Status</span><strong>Active</strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Verification</span>
+          <strong>{% if current_user.is_verified %}<span class="text-success">Verified</span>{% else %}<span class="text-warning">Pending</span>{% endif %}</strong>
+        </li>
+        <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Credit Limit</span><strong>{{ current_user.credit_limit|kes }}</strong></li>
+        <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Registered</span><strong>{{ current_user.created_at.strftime('%d %b %Y') }}</strong></li>
+      </ul>
+      <div class="alert alert-warning d-flex gap-2 align-items-start mt-4 mb-0">
+        <i class="bi bi-exclamation-triangle"></i>
+        <small>Need to change your phone number or National ID? Contact support — these fields are locked for security.</small>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

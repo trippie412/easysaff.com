@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% from 'partials/_product_card.html' import product_card %}
+{% block title %}Financial Services{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+  <div class="container text-center">
+    <span class="section-eyebrow text-white-50">Financial Services</span>
+    <h1 class="text-white">Choose your <span class="text-green">product</span></h1>
+    <p class="text-white-50 mx-auto" style="max-width: 600px;">
+      Savings &amp; loans, investments and specialised facilities — every fee published upfront.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="service-filters mb-4">
+      <button class="btn filter-btn active" data-filter="all">All</button>
+      <button class="btn filter-btn" data-filter="Savings &amp; Loans">Savings &amp; Loans</button>
+      <button class="btn filter-btn" data-filter="Investments">Investments</button>
+      <button class="btn filter-btn" data-filter="Additional Services">Additional Services</button>
+    </div>
+    <div class="row g-4" id="productGrid">
+      {% for p in products %}
+        {{ product_card(p, loop.index0) }}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'dashboard_base.html' %}
+{% block active_page %}loans{% endblock %}
+{% block page_title %}Verification Result{% endblock %}
+{% block page_subtitle %}{{ product.name }} — {{ form_data.amount|kes }}{% endblock %}
+
+{% block app_content %}
+<div class="row g-4 justify-content-center">
+  <div class="col-lg-8">
+
+    <!-- Identity verification -->
+    <div class="card app-card p-4 mb-4">
+      <div class="d-flex align-items-center gap-3">
+        <span class="mini-icon icon-success"><i class="bi bi-patch-check"></i></span>
+        <div>
+          <h5 class="mb-0">Identity Verified <span class="badge bg-success-subtle text-success-emphasis ms-2">MOCK</span></h5>
+          <small class="text-muted">
+            ID {{ identity.id_number }}{% if identity.name %} · {{ identity.name }}{% endif %} · Source: {{ identity.source }}
+          </small>
+        </div>
+      </div>
+    </div>
+
+    {% if eligibility.eligible and breakdown %}
+      <!-- Eligible -->
+      <div class="card app-card p-4 mb-4 eligibility-ok">
+        <div class="text-center py-2">
+          <span class="result-icon success mx-auto"><i class="bi bi-check-lg"></i></span>
+          <h4 class="mt-3 mb-1">You're Eligible! 🎉</h4>
+          <p class="text-muted mb-0">Approved Limit: <strong class="text-green">{{ eligibility.approved_limit|kes }}</strong></p>
+          <p class="small text-muted">{{ eligibility.reason }}</p>
+        </div>
+
+        <div class="fee-calc-card p-4 mt-3">
+          <h6 class="mb-3"><i class="bi bi-receipt me-2 text-green"></i>Payment Breakdown</h6>
+          <div class="fee-row"><span>You Receive</span><strong>{{ breakdown.receive_amount|kes }}</strong></div>
+          <div class="fee-row"><span>Service Fee</span><strong class="text-muted">{{ breakdown.service_fee|kes }}</strong></div>
+          <hr>
+          <div class="fee-row fee-total"><span>Total To Pay (M-PESA)</span><strong class="text-green">{{ breakdown.service_fee|kes }}</strong></div>
+        </div>
+
+        <form method="post" action="{{ url_for('loans.proceed', slug=product.slug) }}" class="mt-4">
+          <button class="btn btn-grad btn-lg w-100" type="submit">
+            <i class="bi bi-phone me-2"></i>Continue to M-PESA Payment
+          </button>
+        </form>
+        <p class="small text-muted text-center mt-2 mb-0">
+          You'll receive an STK Push for <strong>{{ breakdown.service_fee|kes }}</strong> on {{ form_data.phone }}.
+        </p>
+      </div>
+
+    {% else %}
+      <!-- Not eligible -->
+      <div class="card app-card p-4 eligibility-no">
+        <div class="text-center py-3">
+          <span class="result-icon danger mx-auto"><i class="bi bi-x-lg"></i></span>
+          <h4 class="mt-3 mb-1">Not Eligible</h4>
+          <p class="text-muted">{{ eligibility.reason }}</p>
+          {% if eligibility.approved_limit %}
+          <p class="small">Current approved limit: <strong>{{ eligibility.approved_limit|kes }}</strong></p>
+          {% endif %}
+        </div>
+        <div class="d-flex gap-3 mt-3 flex-wrap">
+          <a href="{{ url_for('loans.apply') }}" class="btn btn-outline-green btn-lg flex-grow-1">
+            <i class="bi bi-arrow-left me-2"></i>Try Another Product
+          </a>
+          <a href="{{ url_for('dashboard.support') }}" class="btn btn-light btn-lg flex-grow-1">
+            <i class="bi bi-headset me-2"></i>Contact Support
+          </a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

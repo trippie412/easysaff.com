@@ -1,0 +1,336 @@
+{% extends 'base.html' %}
+{% block title %}Affordable Loans &amp; Savings{% endblock %}
+
+{% block content %}
+<!-- ================= HERO ================= -->
+<header class="hero" id="home">
+  <div class="hero-blob blob-1"></div>
+  <div class="hero-blob blob-2"></div>
+  <div class="container position-relative">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6 hero-copy">
+        <span class="hero-badge glass"><i class="bi bi-shield-check"></i> Licensed Digital Lender</span>
+        <h1>Loans in <span class="text-green">minutes</span>,<br>not weeks.</h1>
+        <p class="hero-sub">
+          Borrow from <strong>KES 100</strong> to <strong>KES 500,000</strong> straight to your
+          M-PESA. Transparent fees, instant eligibility, zero paperwork.
+        </p>
+        <div class="d-flex flex-wrap gap-3 mt-4">
+          <a href="{{ url_for('auth.register') }}" class="btn btn-grad btn-lg">
+            <i class="bi bi-rocket-takeoff me-2"></i>Apply Now
+          </a>
+          <a href="{{ url_for('main.services') }}" class="btn btn-outline-green btn-lg">Explore Services</a>
+        </div>
+        <div class="hero-trust d-flex flex-wrap gap-4 mt-4">
+          <span><i class="bi bi-patch-check-fill"></i> CBK Compliant</span>
+          <span><i class="bi bi-lock-fill"></i> 256-bit Secure</span>
+          <span><i class="bi bi-phone-fill"></i> STK Push Pay</span>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="phone-mock">
+          <div class="phone-screen">
+            <div class="phone-balance">
+              <small>Available Balance</small>
+              <strong>KES 25,400</strong>
+            </div>
+            <div class="phone-quick">
+              <div class="phone-btn"><i class="bi bi-wallet2"></i><span>Loans</span></div>
+              <div class="phone-btn"><i class="bi bi-arrow-down-circle"></i><span>Pay</span></div>
+              <div class="phone-btn"><i class="bi bi-graph-up-arrow"></i><span>Invest</span></div>
+            </div>
+            <div class="phone-approw">
+              <span class="phone-avatar">D</span>
+              <div>
+                <small>Loan Approved 🎉</small>
+                <strong>KES 10,000 sent to M-PESA</strong>
+              </div>
+            </div>
+          </div>
+          <div class="float-chip chip-1 glass"><i class="bi bi-lightning-charge-fill"></i> Instant Approval</div>
+          <div class="float-chip chip-2 glass"><i class="bi bi-shield-lock-fill"></i> Secured by M-PESA</div>
+          <div class="float-chip chip-3 glass"><i class="bi bi-percent"></i> From 5% flat</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= STATS ================= -->
+<section class="stats-band">
+  <div class="container">
+    <div class="row g-3">
+      {% for s in stats %}
+      <div class="col-6 col-lg-3">
+        <div class="stat-card glass">
+          <span class="stat-value"
+                data-count="{{ s.value }}"
+                data-suffix="{{ s.suffix }}"
+                data-decimals="{{ s.decimals | default(0) }}">0</span>
+          <span class="stat-label">{{ s.label }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section class="section" id="about">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <div class="about-visual">
+          <div class="about-card-main glass">
+            <i class="bi bi-bank2"></i>
+            <h4>Why GreenLend?</h4>
+            <p>Fair credit powered by transparent technology — no hidden charges, no surprise fees.</p>
+          </div>
+          <div class="about-card-mini glass">
+            <i class="bi bi-people-fill"></i>
+            <strong>250k+</strong><small>Customers served</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <span class="section-eyebrow">About Us</span>
+        <h2 class="section-title">Financial freedom, <span class="text-green">one tap away</span></h2>
+        <p class="section-text">
+          GreenLend is a modern digital lending platform connecting Kenyans with affordable
+          credit, savings and investment products. Our fee structure is published in full —
+          the amount you see is the amount you pay.
+        </p>
+        <div class="feature-check-list">
+          <div><i class="bi bi-check-circle-fill"></i><div><strong>Transparent tiered fees</strong><small>KES 150 – KES 3,500 depending on amount</small></div></div>
+          <div><i class="bi bi-check-circle-fill"></i><div><strong>Instant eligibility</strong><small>Know your limit in seconds, not days</small></div></div>
+          <div><i class="bi bi-check-circle-fill"></i><div><strong>M-PESA native</strong><small>Apply and pay via STK Push</small></div></div>
+          <div><i class="bi bi-check-circle-fill"></i><div><strong>24/7 support</strong><small>Real humans, real fast</small></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HOW IT WORKS ================= -->
+<section class="section section-alt" id="how">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="section-eyebrow">How It Works</span>
+      <h2 class="section-title">Three steps to your <span class="text-green">loan</span></h2>
+    </div>
+    <div class="row g-4">
+      {% set steps = [
+        ('bi-person-plus', '1', 'Create Account', 'Register with your phone, email and National ID. Verification takes seconds.'),
+        ('bi-ui-checks-grid', '2', 'Apply & Get Verified', 'Pick a product, enter your amount and pass instant mock verification & eligibility.'),
+        ('bi-phone', '3', 'Receive via M-PESA', 'Confirm with STK Push and the money lands in your M-PESA in minutes.')
+      ] %}
+      {% for icon, num, title, text in steps %}
+      <div class="col-md-4">
+        <div class="step-card glass">
+          <div class="step-icon"><i class="bi {{ icon }}"></i><span class="step-num">{{ num }}</span></div>
+          <h4>{{ title }}</h4>
+          <p>{{ text }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ================= FEATURES ================= -->
+<section class="section" id="features">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="section-eyebrow">Features</span>
+      <h2 class="section-title">Built for <span class="text-green">mobile-first</span> finance</h2>
+    </div>
+    <div class="row g-4">
+      {% set features = [
+        ('bi-lightning-charge-fill', 'Instant Disbursement', 'Funds hit M-PESA within minutes of confirmation — even at 2 AM.'),
+        ('bi-shield-lock-fill', 'Bank-Grade Security', 'Encrypted sessions, secure passwords and mock verification you can swap for real KYC.'),
+        ('bi-calculator-fill', 'Transparent Fees', 'A published tiered fee table. No hidden charges, ever.'),
+        ('bi-graph-up-arrow', 'Smart Limits', 'Your credit limit grows as you build a healthy repayment record.'),
+        ('bi-headset', '24/7 Human Support', 'Chat with real support agents whenever you need help.'),
+        ('bi-phone-vibrate-fill', 'STK Push Payments', 'Pay back in seconds with M-PESA STK Push — no typing of till numbers.')
+      ] %}
+      {% for icon, title, text in features %}
+      <div class="col-md-6 col-lg-4">
+        <div class="card feature-card">
+          <div class="feature-icon"><i class="bi {{ icon }}"></i></div>
+          <h4>{{ title }}</h4>
+          <p>{{ text }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ================= SERVICES PREVIEW ================= -->
+<section class="section section-alt" id="services-preview">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="section-eyebrow">Financial Services</span>
+      <h2 class="section-title">Products for every <span class="text-green">goal</span></h2>
+      <p class="section-text mx-auto" style="max-width: 640px;">
+        Savings &amp; loans, investments and specialised facilities — all with published
+        interest and repayment terms.
+      </p>
+    </div>
+    {% from 'partials/_product_card.html' import product_card %}
+    <div class="row g-4">
+      {% for p in products[:6] %}
+        {{ product_card(p, loop.index0) }}
+      {% endfor %}
+    </div>
+    <div class="text-center mt-5">
+      <a href="{{ url_for('main.services') }}" class="btn btn-outline-green btn-lg">
+        View All 15 Products <i class="bi bi-arrow-right ms-1"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TESTIMONIALS ================= -->
+<section class="section" id="testimonials">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="section-eyebrow">Testimonials</span>
+      <h2 class="section-title">Loved by <span class="text-green">250,000+</span> customers</h2>
+    </div>
+    <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        {% set testimonials = [
+          ('Wanjiku M.', 'Nairobi', 'bi-star-fill', 'I applied at 9 PM and had my school fees loan by 9:12. The fee breakdown was exactly what I paid.'),
+          ('Brian O.', 'Kisumu', 'bi-star-fill', 'Fuliza-style overdraft but with fair, published fees. The dashboard keeps me honest with my repayments.'),
+          ('Amina H.', 'Mombasa', 'bi-star-fill', 'The women enterprise loan changed my business. Support replied to my message within minutes.')
+        ] %}
+        {% for name, city, icon, quote in testimonials %}
+        <div class="carousel-item {{ 'active' if loop.first }}">
+          <div class="testimonial-card glass mx-auto">
+            <div class="stars">{% for i in range(5) %}<i class="bi bi-star-fill"></i>{% endfor %}</div>
+            <p class="quote">"{{ quote }}"</p>
+            <div class="person">
+              <span class="person-avatar">{{ name[0] }}</span>
+              <div><strong>{{ name }}</strong><small>{{ city }}</small></div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section class="section section-alt" id="faq">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="section-eyebrow">FAQ</span>
+      <h2 class="section-title">Frequently asked <span class="text-green">questions</span></h2>
+    </div>
+    <div class="accordion faq-accordion mx-auto" style="max-width: 760px;" id="faqAccordion">
+      {% set faqs = [
+        ('Who can apply?', 'Any Kenyan 18+ with a National ID and an active phone line. Registration and verification are instant.'),
+        ('How is the service fee calculated?', 'Fees follow a published tiered table based on the amount you receive — from KES 150 up to KES 3,500. The fee is shown before you pay.'),
+        ('How fast will I receive the money?', 'Once your STK Push payment confirms, funds are disbursed within minutes to your M-PESA.'),
+        ('What happens if I pay late?', 'A reminder is sent via SMS and in-app notification. Repeated defaulting may affect your credit limit.'),
+        ('Can I increase my credit limit?', 'Yes — build a repayment record and your limit grows automatically. Admin can also adjust limits.'),
+        ('Is my personal data safe?', 'Absolutely. All connections are encrypted, passwords are hashed, and data is never sold.')
+      ] %}
+      {% for q, a in faqs %}
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button {{ 'collapsed' if not loop.first }}" type="button"
+                  data-bs-toggle="collapse" data-bs-target="#faq{{ loop.index }}">
+            {{ q }}
+          </button>
+        </h2>
+        <div id="faq{{ loop.index }}" class="accordion-collapse collapse {{ 'show' if loop.first }}"
+             data-bs-parent="#faqAccordion">
+          <div class="accordion-body">{{ a }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section class="section" id="contact">
+  <div class="container">
+    <div class="row g-5 align-items-center">
+      <div class="col-lg-5">
+        <span class="section-eyebrow">Contact</span>
+        <h2 class="section-title">We're here to <span class="text-green">help</span></h2>
+        <p class="section-text">Questions about products, limits or payments? Send us a message and we'll reply within minutes.</p>
+        <ul class="contact-list">
+          <li><i class="bi bi-telephone-fill"></i> <div><strong>Call</strong><span>0700 000 000 (24/7)</span></div></li>
+          <li><i class="bi bi-envelope-fill"></i> <div><strong>Email</strong><span>support@greenlend.co.ke</span></div></li>
+          <li><i class="bi bi-chat-dots-fill"></i> <div><strong>In-app chat</strong><span>Dashboard &rarr; Support</span></div></li>
+        </ul>
+      </div>
+      <div class="col-lg-7">
+        <form class="card form-card glass p-4 p-md-5" id="contactForm">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Full Name</label>
+              <input type="text" class="form-control form-control-lg" required placeholder="Jane Doe">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Phone</label>
+              <input type="tel" class="form-control form-control-lg" required placeholder="0712 345 678">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control form-control-lg" required placeholder="jane@email.com">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Message</label>
+              <textarea class="form-control form-control-lg" rows="4" required placeholder="How can we help?"></textarea>
+            </div>
+            <div class="col-12">
+              <button class="btn btn-grad btn-lg w-100" type="submit">
+                <i class="bi bi-send-fill me-2"></i>Send Message
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="cta-band">
+  <div class="container text-center">
+    <h2>Ready to get started?</h2>
+    <p>Join thousands of Kenyans borrowing smarter today.</p>
+    <div class="d-flex justify-content-center flex-wrap gap-3 mt-4">
+      <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg text-green">Create Free Account</a>
+      <a href="{{ url_for('main.services') }}" class="btn btn-outline-light btn-lg">Browse Products</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.getElementById('contactForm')?.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const btn = this.querySelector('button[type="submit"]');
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Sending...';
+    setTimeout(() => {
+      btn.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i>Message Sent (Mock)';
+      this.reset();
+      setTimeout(() => { btn.innerHTML = '<i class="bi bi-send-fill me-2"></i>Send Message'; }, 3000);
+    }, 1200);
+  });
+</script>
+{% endblock %}

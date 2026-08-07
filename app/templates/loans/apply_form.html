@@ -1,0 +1,92 @@
+{% extends 'dashboard_base.html' %}
+{% block active_page %}loans{% endblock %}
+{% block page_title %}{{ product.name }}{% endblock %}
+{% block page_subtitle %}Step 2 of 3 — enter your details{% endblock %}
+
+{% block app_content %}
+<div class="row g-4">
+  <div class="col-lg-7">
+    <form method="post" class="card app-card p-4" novalidate>
+      {{ form.hidden_tag() }}
+
+      <h5 class="mb-4"><i class="bi bi-clipboard-check me-2 text-green"></i>Application Details</h5>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Phone Number</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-phone"></i></span>
+            {{ form.phone(class="form-control form-control-lg", placeholder="0712 345 678", inputmode="numeric") }}
+          </div>
+          {% for e in form.phone.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Email Address</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+            {{ form.email(class="form-control form-control-lg", placeholder="you@email.com", type="email") }}
+          </div>
+          {% for e in form.email.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">National ID Number</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-person-vcard"></i></span>
+            {{ form.national_id(class="form-control form-control-lg", placeholder="7–8 digits", inputmode="numeric") }}
+          </div>
+          <small class="text-muted">Mock-verified by the identity service.</small>
+          {% for e in form.national_id.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Amount to Receive (KES)</label>
+          <div class="input-group">
+            <span class="input-group-text">KES</span>
+            {{ form.amount(class="form-control form-control-lg fee-amount-input", placeholder="e.g. 10000", inputmode="numeric", min=1, max=500000) }}
+          </div>
+          <small class="text-muted">Between KES 1 and KES 500,000.</small>
+          {% for e in form.amount.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="col-12">
+          <div class="form-check">
+            {{ form.accept_terms(class="form-check-input") }}
+            <label class="form-check-label" for="accept_terms">
+              I confirm the details above are correct and accept the
+              <a href="#" class="text-green">loan terms</a> for {{ product.name }}.
+            </label>
+          </div>
+          {% for e in form.accept_terms.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+        </div>
+      </div>
+
+      <button class="btn btn-grad btn-lg w-100 mt-4" type="submit">
+        <i class="bi bi-shield-check me-2"></i>Verify &amp; Check Eligibility
+      </button>
+    </form>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card app-card p-4 mb-4">
+      <div class="d-flex align-items-center gap-3 mb-3">
+        <span class="detail-icon grad-a"><i class="bi {{ product.icon }}"></i></span>
+        <div>
+          <h5 class="mb-0">{{ product.name }}</h5>
+          <small class="text-muted">{{ product.category }}</small>
+        </div>
+      </div>
+      <ul class="benefit-list small-list">
+        <li><i class="bi bi-percent"></i>Interest: <strong>{{ product.interest }}</strong></li>
+        <li><i class="bi bi-calendar-check"></i>Repayment: <strong>{{ product.repayment }}</strong></li>
+      </ul>
+    </div>
+
+    <div class="card app-card p-4 fee-calc-card" data-fee-calculator>
+      <h6 class="mb-3"><i class="bi bi-calculator me-2 text-green"></i>Payment Breakdown</h6>
+      <div class="fee-row"><span>You Receive</span><strong id="feeReceive">KES 0</strong></div>
+      <div class="fee-row"><span>Service Fee</span><strong id="feeFee" class="text-muted">KES 0</strong></div>
+      <hr>
+      <div class="fee-row fee-total"><span>Total To Pay</span><strong id="feeTotal" class="text-green">KES 0</strong></div>
+      <p class="small text-muted mt-3 mb-0" id="feeHint">Enter an amount above to see the exact breakdown. Fees follow the published tiered table (KES 150 – KES 3,500).</p>
+    </div>
+  </div>
+</div>
+{% endblock %}
