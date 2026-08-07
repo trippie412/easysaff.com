@@ -1,5 +1,6 @@
 from flask import Flask
 import os
+from sqlalchemy.engine.url import make_url
 
 from config import config_map, Config
 from .extensions import db, login_manager
@@ -13,9 +14,31 @@ def create_app(config_name=None):
     app.config.from_object(config_map.get(config_name, Config))
 
     print("=" * 60)
-    print("FLASK_ENV:", config_name)
+    print(f"FLASK_ENV: {config_name}")
+
+    database_url = app.config.get("SQLALCHEMY_DATABASE_URI")
+
+    if not database_url:
+        raise RuntimeError(
+            "DATABASE_URL is not configured. "
+            "Set the DATABASE_URL environment variable in Vercel."
+        )
+
     print("DATABASE_URL exists:", bool(os.getenv("DATABASE_URL")))
-    print("Using database:", app.config["SQLALCHEMY_DATABASE_URI"])
+
+    try:
+        parsed = make_url(database_url)
+
+        print(f"Database Driver : {parsed.drivername}")
+        print(f"Database Host   : {parsed.host}")
+        print(f"Database Port   : {parsed.port}")
+        print(f"Database Name   : {parsed.database}")
+
+    except Exception:
+        print("Invalid DATABASE_URL:")
+        print(repr(database_url))
+        raise
+
     print("=" * 60)
 
     db.init_app(app)
@@ -41,10 +64,12 @@ def create_app(config_name=None):
     app.register_blueprint(dashboard_bp, url_prefix="/dashboard")
     app.register_blueprint(loans_bp, url_prefix="/loans")
     app.register_blueprint(payments_bp, url_prefix="/payments")
+
     app.register_blueprint(admin_bp, url_prefix="/admin")
 
     with app.app_context():
         db.create_all()
+
         from .seed import seed_database
         seed_database()
 
