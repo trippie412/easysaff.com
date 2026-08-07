@@ -37,7 +37,7 @@ class PalPlussService:
     def __init__(self):
         self.api_key = os.getenv("PALPLUSS_API_KEY")
         self.callback_url = os.getenv(
-            "PALPLUSS_CALLBACK_URL"
+            "CALLBACK_URL"
         )
 
         self.timeout = float(
