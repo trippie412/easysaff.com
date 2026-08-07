@@ -1,20 +1,30 @@
 from flask import Flask
+import os
 
 from config import config_map, Config
 from .extensions import db, login_manager
 
 
-def create_app(config_name="development"):
+def create_app(config_name=None):
+    if config_name is None:
+        config_name = os.getenv("FLASK_ENV", "production")
+
     app = Flask(__name__)
     app.config.from_object(config_map.get(config_name, Config))
 
+    print("=" * 60)
+    print("FLASK_ENV:", config_name)
+    print("DATABASE_URL exists:", bool(os.getenv("DATABASE_URL")))
+    print("Using database:", app.config["SQLALCHEMY_DATABASE_URI"])
+    print("=" * 60)
+
     db.init_app(app)
+
     login_manager.init_app(app)
     login_manager.login_view = "auth.login"
     login_manager.login_message = "Please log in to continue."
     login_manager.login_message_category = "warning"
 
-    # Jinja helpers
     @app.template_filter("kes")
     def kes_filter(value):
         return f"KES {int(value or 0):,}"
