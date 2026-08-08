@@ -7,133 +7,183 @@
 {% block content %}
 
 <div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-12 col-sm-10 col-md-7 col-lg-5">
 
-```
-  <!-- Verification Card -->
-  <div class="card shadow-lg border-0 rounded-4">
+    <div class="row justify-content-center">
 
-    <div class="card-body p-4 p-md-5">
+        <div class="col-12 col-sm-10 col-md-7 col-lg-5">
 
-      <!-- Icon -->
-      <div class="text-center mb-4">
-        <div
-          class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
-          style="width: 72px; height: 72px; background: rgba(13, 110, 253, 0.1);"
-        >
-          <i
-            class="bi bi-shield-check text-primary"
-            style="font-size: 2rem;"
-          ></i>
-        </div>
+            {% include 'partials/_flash.html' %}
 
-        <h2 class="fw-bold mb-2">Verify Your Account</h2>
+            <!-- Verification Card -->
+            <div class="card shadow-lg border-0 rounded-4">
 
-        <p class="text-muted mb-0">
-          Enter the 6-digit verification code we sent to you.
-        </p>
-      </div>
+                <div class="card-body p-4 p-md-5">
 
-      <!-- Security Notice -->
-      <div
-        class="alert alert-warning border-0 rounded-3"
-        role="alert"
-      >
-        <div class="d-flex align-items-start">
+                    <!-- Header -->
+                    <div class="text-center mb-4">
 
-          <i class="bi bi-shield-lock-fill me-3 fs-5"></i>
+                        <div
+                            class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
+                            style="
+                                width: 72px;
+                                height: 72px;
+                                background: rgba(13, 110, 253, 0.1);
+                            "
+                        >
+                            <i
+                                class="bi bi-shield-check text-primary"
+                                style="font-size: 2rem;"
+                            ></i>
+                        </div>
 
-          <div>
-            <div class="fw-bold mb-1">
-              Your verification code has been sent
+                        <h2 class="fw-bold mb-2">
+                            Verify Your Account
+                        </h2>
+
+                        <p class="text-muted mb-0">
+                            Enter the 6-digit verification code below.
+                        </p>
+
+                    </div>
+
+
+                    <!-- Verification Code -->
+                    {% if show_code %}
+
+                    <div
+                        class="alert alert-warning border-0 rounded-3 text-center mb-4"
+                        role="alert"
+                    >
+
+                        <div class="mb-2">
+                            <i class="bi bi-shield-lock-fill me-1"></i>
+                            <strong>Your verification code is</strong>
+                        </div>
+
+                        <div
+                            class="fw-bold text-dark"
+                            style="
+                                font-size: 2rem;
+                                letter-spacing: 0.5rem;
+                            "
+                        >
+                            {{ show_code }}
+                        </div>
+
+                        <div class="small mt-2">
+                            Enter this 6-digit code below.
+                        </div>
+
+                        <div class="small fw-semibold text-danger mt-2">
+                            <i class="bi bi-lock-fill me-1"></i>
+                            Please do not share this code with anyone.
+                        </div>
+
+                    </div>
+
+                    {% else %}
+
+                    <div
+                        class="alert alert-info border-0 rounded-3"
+                        role="alert"
+                    >
+                        <div class="d-flex align-items-start">
+
+                            <i class="bi bi-info-circle-fill me-3 fs-5"></i>
+
+                            <div>
+                                <div class="fw-bold mb-1">
+                                    Verification code unavailable
+                                </div>
+
+                                <div class="small">
+                                    Please request a new verification code
+                                    and try again.
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    {% endif %}
+
+
+                    <!-- Verification Form -->
+                    <form method="post" novalidate>
+
+                        <div class="mb-3">
+
+                            <label
+                                for="verificationCode"
+                                class="form-label fw-semibold"
+                            >
+                                Verification Code
+                            </label>
+
+                            <input
+                                id="verificationCode"
+                                type="text"
+                                name="code"
+                                class="form-control form-control-lg text-center"
+                                placeholder="••••••"
+                                maxlength="6"
+                                minlength="6"
+                                inputmode="numeric"
+                                pattern="[0-9]{6}"
+                                autocomplete="one-time-code"
+                                autofocus
+                                required
+                                aria-label="Enter your 6-digit verification code"
+                            >
+
+                            <div class="form-text text-center mt-2">
+                                Enter the 6-digit code shown above.
+                            </div>
+
+                        </div>
+
+
+                        <!-- Verify Button -->
+                        <button
+                            type="submit"
+                            class="btn btn-primary btn-lg w-100 rounded-3 mt-3"
+                        >
+                            <i class="bi bi-patch-check-fill me-2"></i>
+                            Verify &amp; Continue
+                        </button>
+
+                    </form>
+
+
+                    <!-- Expiration -->
+                    <div class="text-center mt-4">
+
+                        <div class="small text-muted">
+                            <i class="bi bi-clock me-1"></i>
+                            Code expires in 10 minutes.
+                        </div>
+
+                    </div>
+
+
+                    <!-- Security Reminder -->
+                    <div class="text-center mt-3">
+
+                        <div class="small text-muted">
+                            <i class="bi bi-shield-lock me-1"></i>
+                            Never share your verification code with anyone.
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
 
-            <div class="small">
-              Check your phone or email for your 6-digit verification code.
-            </div>
-
-            <div class="small fw-semibold mt-2">
-              <i class="bi bi-lock-fill me-1"></i>
-              Please do not share this code with anyone.
-            </div>
-          </div>
-
         </div>
-      </div>
-
-      <!-- Verification Form -->
-      <form method="post" novalidate>
-
-        <div class="mb-3">
-
-          <label
-            for="verificationCode"
-            class="form-label fw-semibold"
-          >
-            Verification Code
-          </label>
-
-          <input
-            id="verificationCode"
-            type="text"
-            name="code"
-            class="form-control form-control-lg text-center"
-            placeholder="••••••"
-            maxlength="6"
-            minlength="6"
-            inputmode="numeric"
-            pattern="[0-9]{6}"
-            autocomplete="one-time-code"
-            autofocus
-            required
-            aria-label="Enter your 6-digit verification code"
-          >
-
-          <div class="form-text text-center mt-2">
-            Enter the 6-digit code you received.
-          </div>
-
-        </div>
-
-        <!-- Verify Button -->
-        <button
-          type="submit"
-          class="btn btn-primary btn-lg w-100 rounded-3 mt-3"
-        >
-          <i class="bi bi-patch-check-fill me-2"></i>
-          Verify &amp; Continue
-        </button>
-
-      </form>
-
-      <!-- Expiration -->
-      <div class="text-center mt-4">
-
-        <div class="small text-muted">
-          <i class="bi bi-clock me-1"></i>
-          Code expires in 10 minutes.
-        </div>
-
-      </div>
-
-      <!-- Security Reminder -->
-      <div class="text-center mt-3">
-
-        <div class="small text-muted">
-          <i class="bi bi-shield-lock me-1"></i>
-          Never share your verification code with anyone.
-        </div>
-
-      </div>
 
     </div>
-  </div>
 
-</div>
-```
-
-  </div>
 </div>
 
 {% endblock %}

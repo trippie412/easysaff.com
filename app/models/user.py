@@ -82,7 +82,7 @@ class User(UserMixin, db.Model):
 
     credit_limit = db.Column(
         db.Integer,
-        default=100000,
+        default=500000,
     )
 
     # =========================================================

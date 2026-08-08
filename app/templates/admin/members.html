@@ -36,7 +36,6 @@
 
             </div>
 
-
             <!-- FILTERS + SEARCH -->
             <div class="d-flex flex-wrap
                         align-items-center
@@ -56,7 +55,6 @@
                     All
                 </a>
 
-
                 <!-- ACTIVE -->
                 <a
                     href="{{ url_for('admin.members', status='active') }}"
@@ -69,7 +67,6 @@
                 >
                     Active
                 </a>
-
 
                 <!-- SUSPENDED -->
                 <a
@@ -84,7 +81,6 @@
                     Suspended
                 </a>
 
-
                 <!-- PENDING -->
                 <a
                     href="{{ url_for('admin.members', status='pending') }}"
@@ -97,7 +93,6 @@
                 >
                     Pending
                 </a>
-
 
                 <!-- SEARCH -->
                 <form
@@ -139,7 +134,6 @@
         </div>
 
     </div>
-
 
     <!-- =========================================================
          MEMBERS TABLE
@@ -189,299 +183,313 @@
 
             </thead>
 
-
             <tbody>
 
                 {% for m in items %}
 
-                <tr>
+                    <tr>
 
-                    <!-- =================================================
-                         MEMBER
-                         ================================================= -->
+                        <!-- =================================================
+                             MEMBER
+                             ================================================= -->
 
-                    <td>
+                        <td>
 
-                        <div class="d-flex align-items-center gap-2">
+                            <div class="d-flex align-items-center gap-2">
 
-                            <span class="avatar-circle avatar-sm">
-                                {{ m.initials() }}
-                            </span>
+                                <span class="avatar-circle avatar-sm">
+                                    {{ m.initials() }}
+                                </span>
 
-                            <div>
+                                <div>
 
-                                <strong class="d-block">
-                                    {{ m.full_name() }}
-                                </strong>
+                                    <strong class="d-block">
+                                        {{ m.full_name() }}
+                                    </strong>
 
-                                <small class="text-muted">
-                                    {{ m.email or "—" }}
-                                </small>
+                                    <small class="text-muted">
+                                        {{ m.email or "—" }}
+                                    </small>
+
+                                </div>
 
                             </div>
 
-                        </div>
+                        </td>
 
-                    </td>
+                        <!-- =================================================
+                             PHONE
+                             ================================================= -->
 
+                        <td class="small">
+                            {{ m.phone }}
+                        </td>
 
-                    <!-- =================================================
-                         PHONE
-                         ================================================= -->
+                        <!-- =================================================
+                             VERIFIED
+                             ================================================= -->
 
-                    <td class="small">
-                        {{ m.phone }}
-                    </td>
+                        <td class="text-center">
 
+                            {% if m.is_verified %}
 
-                    <!-- =================================================
-                         VERIFIED
-                         ================================================= -->
+                                <span class="badge
+                                             bg-success-subtle
+                                             text-success-emphasis">
 
-                    <td class="text-center">
+                                    <i class="bi bi-patch-check-fill me-1"></i>
+                                    Verified
 
-                        {% if m.is_verified %}
+                                </span>
 
-                            <span class="badge
-                                         bg-success-subtle
-                                         text-success-emphasis">
+                            {% else %}
 
-                                <i class="bi bi-patch-check-fill me-1"></i>
-                                Verified
+                                <span class="badge
+                                             bg-warning-subtle
+                                             text-warning-emphasis">
 
-                            </span>
+                                    <i class="bi bi-patch-question me-1"></i>
+                                    Pending
 
-                        {% else %}
+                                </span>
 
-                            <span class="badge
-                                         bg-warning-subtle
-                                         text-warning-emphasis">
+                            {% endif %}
 
-                                <i class="bi bi-patch-question me-1"></i>
-                                Pending
+                        </td>
 
-                            </span>
+                        <!-- =================================================
+                             CREDIT LIMIT
+                             ================================================= -->
 
-                        {% endif %}
+                        <td class="text-end fw-semibold">
 
-                    </td>
+                            {{ m.credit_limit|kes }}
 
+                        </td>
 
-                    <!-- =================================================
-                         CREDIT LIMIT
-                         ================================================= -->
+                        <!-- =================================================
+                             AVAILABLE BALANCE
+                             ================================================= -->
 
-                    <td class="text-end fw-semibold">
+                        <td class="text-end fw-semibold">
 
-                        {{ m.credit_limit|kes }}
+                            {{ m.available_balance|kes }}
 
-                    </td>
+                        </td>
 
+                        <!-- =================================================
+                             JOINED
+                             ================================================= -->
 
-                    <!-- =================================================
-                         AVAILABLE BALANCE
-                         ================================================= -->
+                        <td class="small text-muted">
 
-                    <td class="text-end fw-semibold">
+                            {% if m.created_at %}
 
-                        {{ m.available_balance|kes }}
+                                {{ m.created_at.strftime("%d %b %Y") }}
 
-                    </td>
+                            {% else %}
 
+                                —
 
-                    <!-- =================================================
-                         JOINED
-                         ================================================= -->
+                            {% endif %}
 
-                    <td class="small text-muted">
+                        </td>
 
-                        {% if m.created_at %}
+                        <!-- =================================================
+                             STATUS
+                             ================================================= -->
 
-                            {{ m.created_at.strftime("%d %b %Y") }}
+                        <td class="text-center">
 
-                        {% else %}
+                            {% if m.is_suspended %}
 
-                            —
+                                <span class="badge
+                                             bg-danger-subtle
+                                             text-danger-emphasis">
 
-                        {% endif %}
+                                    <i class="bi bi-slash-circle me-1"></i>
+                                    Suspended
 
-                    </td>
+                                </span>
 
+                            {% elif not m.is_active %}
 
-                    <!-- =================================================
-                         STATUS
-                         ================================================= -->
+                                <span class="badge
+                                             bg-secondary-subtle
+                                             text-secondary-emphasis">
 
-                    <td class="text-center">
+                                    <i class="bi bi-person-x me-1"></i>
+                                    Inactive
 
-                        {% if m.is_suspended %}
+                                </span>
 
-                            <span class="badge
-                                         bg-danger-subtle
-                                         text-danger-emphasis">
+                            {% elif not m.is_verified %}
 
-                                <i class="bi bi-slash-circle me-1"></i>
-                                Suspended
+                                <span class="badge
+                                             bg-warning-subtle
+                                             text-warning-emphasis">
 
-                            </span>
+                                    <i class="bi bi-hourglass-split me-1"></i>
+                                    Pending
 
-                        {% elif not m.is_active %}
+                                </span>
 
-                            <span class="badge
-                                         bg-secondary-subtle
-                                         text-secondary-emphasis">
+                            {% else %}
 
-                                <i class="bi bi-person-x me-1"></i>
-                                Inactive
+                                <span class="badge
+                                             bg-success-subtle
+                                             text-success-emphasis">
 
-                            </span>
+                                    <i class="bi bi-check-circle me-1"></i>
+                                    Active
 
-                        {% elif not m.is_verified %}
+                                </span>
 
-                            <span class="badge
-                                         bg-warning-subtle
-                                         text-warning-emphasis">
+                            {% endif %}
 
-                                <i class="bi bi-hourglass-split me-1"></i>
-                                Pending
+                        </td>
 
-                            </span>
+                        <!-- =================================================
+                             ACTIONS
+                             ================================================= -->
 
-                        {% else %}
+                        <td class="text-end">
 
-                            <span class="badge
-                                         bg-success-subtle
-                                         text-success-emphasis">
-
-                                <i class="bi bi-check-circle me-1"></i>
-                                Active
-
-                            </span>
-
-                        {% endif %}
-
-                    </td>
-
-
-                    <!-- =================================================
-                         ACTIONS
-                         ================================================= -->
-
-                    <td class="text-end">
-
-                        <div
-                            class="btn-group"
-                            role="group"
-                            aria-label="Member actions"
-                        >
-
-                            <!-- REVIEW MEMBER -->
-                            <a
-                                href="{{ url_for('admin.member_detail', user_id=m.id) }}"
-                                class="btn btn-sm btn-outline-green"
-                                title="Review member details"
+                            <div
+                                class="btn-group"
+                                role="group"
+                                aria-label="Member actions"
                             >
-                                <i class="bi bi-eye"></i>
-                            </a>
 
+                                <!-- REVIEW MEMBER -->
+                                <a
+                                    href="{{ url_for('admin.member_detail', user_id=m.id) }}"
+                                    class="btn btn-sm btn-outline-green"
+                                    title="Review member details"
+                                    aria-label="Review {{ m.full_name() }}"
+                                >
+                                    <i class="bi bi-eye"></i>
+                                </a>
 
-                            <!-- EDIT MEMBER -->
-                            <a
-                                href="{{ url_for('admin.member_edit', user_id=m.id) }}"
-                                class="btn btn-sm btn-light"
-                                title="Edit member"
-                            >
-                                <i class="bi bi-pencil"></i>
-                            </a>
+                                <!-- EDIT MEMBER -->
+                                <a
+                                    href="{{ url_for('admin.member_edit', user_id=m.id) }}"
+                                    class="btn btn-sm btn-light"
+                                    title="Edit member"
+                                    aria-label="Edit {{ m.full_name() }}"
+                                >
+                                    <i class="bi bi-pencil"></i>
+                                </a>
 
+                                <!-- CREDIT MEMBER -->
+                                <a
+                                    href="{{ url_for('admin.member_deposit', user_id=m.id) }}"
+                                    class="btn btn-sm btn-light"
+                                    title="Credit member"
+                                    aria-label="Credit {{ m.full_name() }}"
+                                >
+                                    <i class="bi bi-plus-circle"></i>
+                                </a>
 
-                            <!-- CREDIT / BONUS -->
-                            <a
-                                href="{{ url_for('admin.member_deposit', user_id=m.id) }}"
-                                class="btn btn-sm btn-light"
-                                title="Credit member"
-                            >
-                                <i class="bi bi-plus-circle"></i>
-                            </a>
+                                <!-- DELETE MEMBER -->
+                                <form
+                                    method="post"
+                                    action="{{ url_for('admin.member_delete', user_id=m.id) }}"
+                                    class="d-inline"
+                                    onsubmit="return confirm(
+                                        'PERMANENTLY DELETE {{ m.full_name()|e }}?\\n\\n' +
+                                        'This will permanently remove the member account, ' +
+                                        'loans, transactions, notifications and messages.\\n\\n' +
+                                        'This action CANNOT be undone.\\n\\n' +
+                                        'Click OK to permanently delete this member.'
+                                    );"
+                                >
+                                    <button
+                                        type="submit"
+                                        class="btn btn-sm btn-outline-danger"
+                                        title="Permanently delete member"
+                                        aria-label="Permanently delete {{ m.full_name() }}"
+                                    >
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </form>
 
-                        </div>
+                            </div>
 
-                    </td>
+                        </td>
 
-                </tr>
-
+                    </tr>
 
                 {% else %}
 
-                <!-- =====================================================
-                     EMPTY STATE
-                     ===================================================== -->
+                    <!-- =====================================================
+                         EMPTY STATE
+                         ===================================================== -->
 
-                <tr>
+                    <tr>
 
-                    <td
-                        colspan="8"
-                        class="text-center py-5"
-                    >
+                        <td
+                            colspan="8"
+                            class="text-center py-5"
+                        >
 
-                        <div class="mb-3">
+                            <div class="mb-3">
 
-                            <i
-                                class="bi bi-people"
-                                style="font-size: 3rem;"
-                            ></i>
+                                <i
+                                    class="bi bi-people"
+                                    style="font-size: 3rem;"
+                                ></i>
 
-                        </div>
+                            </div>
 
-                        <h6 class="fw-bold mb-1">
-                            No members found
-                        </h6>
+                            <h6 class="fw-bold mb-1">
+                                No members found
+                            </h6>
 
+                            {% if search_query %}
 
-                        {% if search_query %}
+                                <p class="text-muted small mb-0">
 
-                            <p class="text-muted small mb-0">
+                                    No members matched
+                                    <strong>{{ search_query }}</strong>.
 
-                                No members matched
-                                <strong>{{ search_query }}</strong>.
+                                </p>
 
-                            </p>
+                                <a
+                                    href="{{ url_for('admin.members') }}"
+                                    class="btn btn-sm btn-outline-green mt-3"
+                                >
+                                    Clear Search
+                                </a>
 
-                            <a
-                                href="{{ url_for('admin.members') }}"
-                                class="btn btn-sm btn-outline-green mt-3"
-                            >
-                                Clear Search
-                            </a>
+                            {% elif current_status %}
 
-                        {% elif current_status %}
+                                <p class="text-muted small mb-0">
 
-                            <p class="text-muted small mb-0">
+                                    There are currently no
+                                    <strong>{{ current_status }}</strong>
+                                    members.
 
-                                There are currently no
-                                <strong>{{ current_status }}</strong>
-                                members.
+                                </p>
 
-                            </p>
+                                <a
+                                    href="{{ url_for('admin.members') }}"
+                                    class="btn btn-sm btn-outline-green mt-3"
+                                >
+                                    View All Members
+                                </a>
 
-                            <a
-                                href="{{ url_for('admin.members') }}"
-                                class="btn btn-sm btn-outline-green mt-3"
-                            >
-                                View All Members
-                            </a>
+                            {% else %}
 
-                        {% else %}
+                                <p class="text-muted small mb-0">
+                                    There are currently no members to display.
+                                </p>
 
-                            <p class="text-muted small mb-0">
-                                There are currently no members to display.
-                            </p>
+                            {% endif %}
 
-                        {% endif %}
+                        </td>
 
-                    </td>
-
-                </tr>
+                    </tr>
 
                 {% endfor %}
 

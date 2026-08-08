@@ -7,7 +7,7 @@ from flask_login import current_user, login_required, login_user, logout_user
 
 from ..extensions import db
 from ..forms.admin import AdminDepositForm, AdminLoginForm, AdminUserEditForm
-from ..models.communication import Notification
+from ..models.communication import Notification, Message
 from ..models.loan import LoanApplication
 from ..models.transaction import Transaction
 from ..models.user import User
@@ -352,6 +352,71 @@ def members():
         q=q,
         current_status=status,
     )
+    
+@admin_bp.route("/members/<int:user_id>/delete", methods=["POST"])
+@admin_required
+def member_delete(user_id):
+    """Permanently delete a normal member and all related records."""
+
+    user = db.session.get(User, user_id)
+
+    # Never allow deleting an admin account.
+    if user is None or user.is_admin:
+        abort(404)
+
+    try:
+        # ---------------------------------------------------------
+        # DELETE TRANSACTIONS FIRST
+        # ---------------------------------------------------------
+        Transaction.query.filter_by(user_id=user.id).delete(
+            synchronize_session=False
+        )
+
+        # ---------------------------------------------------------
+        # DELETE NOTIFICATIONS
+        # ---------------------------------------------------------
+        Notification.query.filter_by(user_id=user.id).delete(
+            synchronize_session=False
+        )
+
+        # ---------------------------------------------------------
+        # DELETE MESSAGES
+        # ---------------------------------------------------------
+        Message.query.filter_by(user_id=user.id).delete(
+            synchronize_session=False
+        )
+
+        # ---------------------------------------------------------
+        # DELETE LOANS
+        #
+        # Transactions referencing loans have already been removed,
+        # so the loan records can now be safely deleted.
+        # ---------------------------------------------------------
+        LoanApplication.query.filter_by(user_id=user.id).delete(
+            synchronize_session=False
+        )
+
+        # ---------------------------------------------------------
+        # DELETE THE MEMBER
+        # ---------------------------------------------------------
+        db.session.delete(user)
+
+        db.session.commit()
+
+        flash(
+            "Member account and all associated records were permanently deleted.",
+            "success",
+        )
+
+    except Exception:
+        db.session.rollback()
+
+        flash(
+            "Unable to delete the member. No changes were made.",
+            "danger",
+        )
+
+    return redirect(url_for("admin.members"))
     
 @admin_bp.route("/members/<int:user_id>")
 @admin_required
