@@ -1,0 +1,769 @@
+{% extends 'admin_base.html' %}
+
+{% block active_page %}members{% endblock %}
+{% block page_title %}Member Details{% endblock %}
+{% block page_subtitle %}Review member account, loans, transactions and wallet activity{% endblock %}
+
+{% block app_content %}
+
+<div class="container-fluid px-0">
+
+    <!-- =====================================================
+         MEMBER HEADER
+    ====================================================== -->
+    <div class="card app-card mb-4">
+
+        <div class="card-body">
+
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+
+                <div class="d-flex align-items-center gap-3">
+
+                    <div class="avatar-circle avatar-lg">
+                        {{ user.initials() }}
+                    </div>
+
+                    <div>
+
+                        <h4 class="fw-bold mb-1">
+                            {{ user.full_name() }}
+                        </h4>
+
+                        <div class="text-muted small">
+                            Member ID #{{ user.id }}
+                        </div>
+
+                        <div class="mt-2">
+
+                            {% if user.is_suspended %}
+
+                                <span class="badge bg-danger-subtle text-danger-emphasis">
+                                    <i class="bi bi-slash-circle me-1"></i>
+                                    Suspended
+                                </span>
+
+                            {% elif not user.is_active %}
+
+                                <span class="badge bg-secondary-subtle text-secondary-emphasis">
+                                    <i class="bi bi-pause-circle me-1"></i>
+                                    Inactive
+                                </span>
+
+                            {% elif not user.is_verified %}
+
+                                <span class="badge bg-warning-subtle text-warning-emphasis">
+                                    <i class="bi bi-clock me-1"></i>
+                                    Verification Pending
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-success-subtle text-success-emphasis">
+                                    <i class="bi bi-check-circle-fill me-1"></i>
+                                    Active & Verified
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ACTIONS -->
+
+                <div class="d-flex flex-wrap gap-2">
+
+                    <a
+                        href="{{ url_for('admin.members') }}"
+                        class="btn btn-sm btn-light"
+                    >
+                        <i class="bi bi-arrow-left me-1"></i>
+                        Back to Members
+                    </a>
+
+                    <a
+                        href="{{ url_for('admin.member_edit', user_id=user.id) }}"
+                        class="btn btn-sm btn-outline-green"
+                    >
+                        <i class="bi bi-pencil me-1"></i>
+                        Edit Member
+                    </a>
+
+                    <a
+                        href="{{ url_for('admin.member_deposit', user_id=user.id) }}"
+                        class="btn btn-sm btn-grad"
+                    >
+                        <i class="bi bi-plus-circle me-1"></i>
+                        Credit Member
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         ACCOUNT SUMMARY
+    ====================================================== -->
+
+    <div class="row g-3 mb-4">
+
+        <!-- BALANCE -->
+
+        <div class="col-md-6 col-xl-3">
+
+            <div class="card app-card h-100">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small class="text-muted">
+                                Available Balance
+                            </small>
+
+                            <h4 class="fw-bold mt-2 mb-0">
+                                {{ user.available_balance|kes }}
+                            </h4>
+
+                        </div>
+
+                        <div class="text-success fs-3">
+                            <i class="bi bi-wallet2"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- CREDIT LIMIT -->
+
+        <div class="col-md-6 col-xl-3">
+
+            <div class="card app-card h-100">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small class="text-muted">
+                                Credit Limit
+                            </small>
+
+                            <h4 class="fw-bold mt-2 mb-0">
+                                {{ user.credit_limit|kes }}
+                            </h4>
+
+                        </div>
+
+                        <div class="text-primary fs-3">
+                            <i class="bi bi-credit-card"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- LOANS -->
+
+        <div class="col-md-6 col-xl-3">
+
+            <div class="card app-card h-100">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small class="text-muted">
+                                Total Loans
+                            </small>
+
+                            <h4 class="fw-bold mt-2 mb-0">
+                                {{ recent_loans|length }}
+                            </h4>
+
+                        </div>
+
+                        <div class="text-warning fs-3">
+                            <i class="bi bi-cash-stack"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- TRANSACTIONS -->
+
+        <div class="col-md-6 col-xl-3">
+
+            <div class="card app-card h-100">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small class="text-muted">
+                                Recent Transactions
+                            </small>
+
+                            <h4 class="fw-bold mt-2 mb-0">
+                                {{ recent_transactions|length }}
+                            </h4>
+
+                        </div>
+
+                        <div class="text-info fs-3">
+                            <i class="bi bi-receipt"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         MEMBER INFORMATION
+    ====================================================== -->
+
+    <div class="row g-4 mb-4">
+
+        <!-- PERSONAL DETAILS -->
+
+        <div class="col-lg-6">
+
+            <div class="card app-card h-100">
+
+                <div class="card-header app-card-header">
+
+                    <h6 class="fw-bold mb-0">
+                        <i class="bi bi-person-vcard me-2"></i>
+                        Personal Information
+                    </h6>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="row g-3">
+
+                        <div class="col-sm-6">
+
+                            <small class="text-muted d-block">
+                                First Name
+                            </small>
+
+                            <strong>
+                                {{ user.first_name }}
+                            </strong>
+
+                        </div>
+
+                        <div class="col-sm-6">
+
+                            <small class="text-muted d-block">
+                                Last Name
+                            </small>
+
+                            <strong>
+                                {{ user.last_name }}
+                            </strong>
+
+                        </div>
+
+                        <div class="col-sm-6">
+
+                            <small class="text-muted d-block">
+                                Phone
+                            </small>
+
+                            <strong>
+                                {{ user.phone }}
+                            </strong>
+
+                        </div>
+
+                        <div class="col-sm-6">
+
+                            <small class="text-muted d-block">
+                                Email
+                            </small>
+
+                            <strong>
+                                {{ user.email }}
+                            </strong>
+
+                        </div>
+
+                        <div class="col-sm-6">
+
+                            <small class="text-muted d-block">
+                                National ID
+                            </small>
+
+                            <strong>
+                                {{ user.national_id }}
+                            </strong>
+
+                        </div>
+
+                        <div class="col-sm-6">
+
+                            <small class="text-muted d-block">
+                                Joined
+                            </small>
+
+                            <strong>
+                                {% if user.created_at %}
+                                    {{ user.created_at.strftime('%d %b %Y, %H:%M') }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ACCOUNT DETAILS -->
+
+        <div class="col-lg-6">
+
+            <div class="card app-card h-100">
+
+                <div class="card-header app-card-header">
+
+                    <h6 class="fw-bold mb-0">
+                        <i class="bi bi-shield-check me-2"></i>
+                        Account Information
+                    </h6>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="row g-3">
+
+                        <div class="col-sm-6">
+
+                            <small class="text-muted d-block">
+                                Verification
+                            </small>
+
+                            {% if user.is_verified %}
+
+                                <span class="badge bg-success-subtle text-success-emphasis">
+                                    Verified
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-warning-subtle text-warning-emphasis">
+                                    Pending
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="col-sm-6">
+
+                            <small class="text-muted d-block">
+                                Account
+                            </small>
+
+                            {% if user.is_active %}
+
+                                <span class="badge bg-success-subtle text-success-emphasis">
+                                    Active
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-secondary-subtle text-secondary-emphasis">
+                                    Inactive
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="col-sm-6">
+
+                            <small class="text-muted d-block">
+                                Suspension
+                            </small>
+
+                            {% if user.is_suspended %}
+
+                                <span class="badge bg-danger-subtle text-danger-emphasis">
+                                    Suspended
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-success-subtle text-success-emphasis">
+                                    Not Suspended
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="col-sm-6">
+
+                            <small class="text-muted d-block">
+                                Credit Limit
+                            </small>
+
+                            <strong>
+                                {{ user.credit_limit|kes }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="col-sm-6">
+
+                            <small class="text-muted d-block">
+                                SMS Notifications
+                            </small>
+
+                            {% if user.notify_sms %}
+                                <span class="text-success">
+                                    Enabled
+                                </span>
+                            {% else %}
+                                <span class="text-muted">
+                                    Disabled
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="col-sm-6">
+
+                            <small class="text-muted d-block">
+                                Email Notifications
+                            </small>
+
+                            {% if user.notify_email %}
+                                <span class="text-success">
+                                    Enabled
+                                </span>
+                            {% else %}
+                                <span class="text-muted">
+                                    Disabled
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         RECENT LOANS
+    ====================================================== -->
+
+    <div class="card app-card mb-4">
+
+        <div class="card-header app-card-header">
+
+            <h6 class="fw-bold mb-0">
+                <i class="bi bi-cash-coin me-2"></i>
+                Recent Loans
+            </h6>
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table app-table align-middle mb-0">
+
+                <thead>
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Product</th>
+                        <th>Amount</th>
+                        <th>Total To Pay</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for loan in recent_loans %}
+
+                    <tr>
+
+                        <td>
+                            #{{ loan.id }}
+                        </td>
+
+                        <td>
+                            <strong>
+                                {{ loan.product_name }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ loan.amount|kes }}
+                        </td>
+
+                        <td>
+                            {{ loan.total_to_pay|kes }}
+                        </td>
+
+                        <td>
+
+                            {% if loan.status == 'paid' %}
+
+                                <span class="badge bg-success-subtle text-success-emphasis">
+                                    Paid
+                                </span>
+
+                            {% elif loan.status in ['approved', 'disbursed', 'repaying'] %}
+
+                                <span class="badge bg-primary-subtle text-primary-emphasis">
+                                    {{ loan.status|title }}
+                                </span>
+
+                            {% elif loan.status == 'rejected' %}
+
+                                <span class="badge bg-danger-subtle text-danger-emphasis">
+                                    Rejected
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-warning-subtle text-warning-emphasis">
+                                    {{ loan.status|title }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td class="small text-muted">
+
+                            {% if loan.created_at %}
+                                {{ loan.created_at.strftime('%d %b %Y') }}
+                            {% else %}
+                                —
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+
+                        <td colspan="6" class="text-center text-muted py-4">
+
+                            <i class="bi bi-cash-stack fs-3 d-block mb-2"></i>
+
+                            No loan applications found for this member.
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         RECENT TRANSACTIONS
+    ====================================================== -->
+
+    <div class="card app-card">
+
+        <div class="card-header app-card-header">
+
+            <h6 class="fw-bold mb-0">
+                <i class="bi bi-arrow-left-right me-2"></i>
+                Recent Transactions
+            </h6>
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table app-table align-middle mb-0">
+
+                <thead>
+
+                    <tr>
+                        <th>Reference</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Fee</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for transaction in recent_transactions %}
+
+                    <tr>
+
+                        <td class="small">
+                            {{ transaction.reference or '—' }}
+                        </td>
+
+                        <td>
+                            {{ transaction.kind|replace('_', ' ')|title }}
+                        </td>
+
+                        <td class="fw-semibold">
+                            {{ transaction.receive_amount|kes }}
+                        </td>
+
+                        <td>
+                            {{ transaction.service_fee|kes }}
+                        </td>
+
+                        <td class="fw-semibold">
+                            {{ transaction.total_amount|kes }}
+                        </td>
+
+                        <td>
+
+                            {% if transaction.status == 'completed' %}
+
+                                <span class="badge bg-success-subtle text-success-emphasis">
+                                    Completed
+                                </span>
+
+                            {% elif transaction.status == 'pending' %}
+
+                                <span class="badge bg-warning-subtle text-warning-emphasis">
+                                    Pending
+                                </span>
+
+                            {% elif transaction.status == 'failed' %}
+
+                                <span class="badge bg-danger-subtle text-danger-emphasis">
+                                    Failed
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-secondary-subtle text-secondary-emphasis">
+                                    {{ transaction.status|title }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td class="small text-muted">
+
+                            {% if transaction.created_at %}
+                                {{ transaction.created_at.strftime('%d %b %Y %H:%M') }}
+                            {% else %}
+                                —
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+
+                        <td colspan="7" class="text-center text-muted py-4">
+
+                            <i class="bi bi-receipt fs-3 d-block mb-2"></i>
+
+                            No transactions found for this member.
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

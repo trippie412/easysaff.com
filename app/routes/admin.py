@@ -269,19 +269,122 @@ def dashboard():
 @admin_bp.route("/members")
 @admin_required
 def members():
+    """
+    Super-admin member management.
+
+    Displays all normal members and supports:
+    - Search by name
+    - Search by phone
+    - Search by email
+    - Search by national ID
+    - Active members
+    - Suspended members
+    - Pending/unverified members
+    """
+
     q = (request.args.get("q") or "").strip()
-    query = User.query.filter_by(is_admin=False)
+    status = (request.args.get("status") or "").strip().lower()
+
+    # =========================================================
+    # ONLY NORMAL MEMBERS
+    # =========================================================
+
+    query = User.query.filter(
+        User.is_admin.is_(False)
+    )
+
+    # =========================================================
+    # SEARCH
+    # =========================================================
+
     if q:
         like = f"%{q}%"
+
         query = query.filter(
-            (User.phone.like(like))
-            | (User.email.like(like))
-            | (User.first_name.like(like))
-            | (User.last_name.like(like))
-            | (User.national_id.like(like))
+            (User.phone.ilike(like))
+            | (User.email.ilike(like))
+            | (User.first_name.ilike(like))
+            | (User.last_name.ilike(like))
+            | (User.national_id.ilike(like))
         )
-    items = query.order_by(User.created_at.desc()).all()
-    return render_template("admin/members.html", items=items, q=q)
+
+    # =========================================================
+    # STATUS FILTER
+    # =========================================================
+
+    if status == "active":
+
+        query = query.filter(
+            User.is_active.is_(True),
+            User.is_suspended.is_(False),
+            User.is_verified.is_(True),
+        )
+
+    elif status == "suspended":
+
+        query = query.filter(
+            User.is_suspended.is_(True)
+        )
+
+    elif status == "pending":
+
+        query = query.filter(
+            User.is_verified.is_(False)
+        )
+
+    # =========================================================
+    # GET MEMBERS
+    # =========================================================
+
+    items = (
+        query
+        .order_by(User.created_at.desc())
+        .all()
+    )
+
+    # =========================================================
+    # RENDER
+    # =========================================================
+
+    return render_template(
+        "admin/members.html",
+        items=items,
+        q=q,
+        current_status=status,
+    )
+    
+@admin_bp.route("/members/<int:user_id>")
+@admin_required
+def member_detail(user_id):
+    """Review a member's complete account information."""
+
+    user = db.session.get(User, user_id)
+
+    if user is None or user.is_admin:
+        abort(404)
+
+    recent_transactions = (
+        Transaction.query
+        .filter_by(user_id=user.id)
+        .order_by(Transaction.created_at.desc())
+        .limit(10)
+        .all()
+    )
+
+    recent_loans = (
+        LoanApplication.query
+        .filter_by(user_id=user.id)
+        .order_by(LoanApplication.created_at.desc())
+        .limit(10)
+        .all()
+    )
+
+    return render_template(
+        "admin/member_detail.html",
+        user=user,
+        recent_transactions=recent_transactions,
+        recent_loans=recent_loans,
+    )
 
 
 @admin_bp.route("/members/<int:user_id>/edit", methods=["GET", "POST"])
@@ -371,13 +474,56 @@ def member_deposit(user_id):
 @admin_bp.route("/loans")
 @admin_required
 def loans():
-    status = (request.args.get("status") or "").strip()
-    query = LoanApplication.query
-    if status:
-        query = query.filter_by(status=status)
-    items = query.order_by(LoanApplication.created_at.desc()).all()
-    return render_template("admin/loans.html", items=items, status=status)
+    """
+    Super-admin loan management.
 
+    Displays all loan applications and allows filtering
+    by their current lifecycle status.
+    """
+
+    status = (request.args.get("status") or "").strip().lower()
+
+    query = LoanApplication.query
+
+    # ---------------------------------------------------------
+    # STATUS FILTER
+    # ---------------------------------------------------------
+
+    allowed_statuses = {
+        "pending",
+        "approved",
+        "rejected",
+        "disbursed",
+        "repaying",
+        "paid",
+    }
+
+    if status in allowed_statuses:
+        query = query.filter(
+            LoanApplication.status == status
+        )
+    else:
+        status = ""
+
+    # ---------------------------------------------------------
+    # FETCH LOANS
+    # ---------------------------------------------------------
+
+    loans = (
+        query
+        .order_by(LoanApplication.created_at.desc())
+        .all()
+    )
+
+    # ---------------------------------------------------------
+    # RENDER
+    # ---------------------------------------------------------
+
+    return render_template(
+        "admin/loans.html",
+        loans=loans,
+        current_status=status,
+    )
 
 @admin_bp.route("/loans/<int:loan_id>/status", methods=["POST"])
 @admin_required
@@ -406,5 +552,76 @@ def loan_status(loan_id):
 @admin_bp.route("/transactions")
 @admin_required
 def transactions():
-    items = Transaction.query.order_by(Transaction.created_at.desc()).all()
-    return render_template("admin/transactions.html", items=items)
+    """
+    Complete platform transaction ledger.
+
+    Shows every transaction performed by every non-admin user,
+    including deposits, admin deposits, loan repayments, bonuses,
+    failed transactions and pending transactions.
+    """
+
+    query = (
+        Transaction.query
+        .join(User, Transaction.user_id == User.id)
+        .filter(User.is_admin.is_(False))
+    )
+
+    # ---------------------------------------------------------
+    # FILTERS
+    # ---------------------------------------------------------
+
+    transaction_type = (
+        request.args.get("type") or ""
+    ).strip().lower()
+
+    status = (
+        request.args.get("status") or ""
+    ).strip().lower()
+
+    search = (
+        request.args.get("q") or ""
+    ).strip()
+
+    # Transaction type
+    if transaction_type:
+        query = query.filter(
+            Transaction.kind == transaction_type
+        )
+
+    # Transaction status
+    if status:
+        query = query.filter(
+            Transaction.status == status
+        )
+
+    # Search member / phone / reference
+    if search:
+        like = f"%{search}%"
+
+        query = query.filter(
+            (User.first_name.ilike(like))
+            | (User.last_name.ilike(like))
+            | (User.phone.ilike(like))
+            | (User.email.ilike(like))
+            | (User.national_id.ilike(like))
+            | (Transaction.reference.ilike(like))
+        )
+
+    # ---------------------------------------------------------
+    # FETCH COMPLETE LEDGER
+    # ---------------------------------------------------------
+
+    items = (
+        query
+        .order_by(Transaction.created_at.desc())
+        .all()
+    )
+
+    return render_template(
+        "admin/transactions.html",
+        transactions=items,
+        items=items,
+        current_type=transaction_type,
+        current_status=status,
+        search_query=search,
+    )

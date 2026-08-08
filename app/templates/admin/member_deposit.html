@@ -1,67 +1,346 @@
 {% extends 'admin_base.html' %}
+
 {% block active_page %}members{% endblock %}
-{% block page_title %}Deposit for Member{% endblock %}
-{% block page_subtitle %}{{ member.full_name() }} · {{ member.phone }}{% endblock %}
+
+{% block page_title %}Credit Member{% endblock %}
+
+{% block page_subtitle %}
+    {{ user.full_name() }} · {{ user.phone }}
+{% endblock %}
 
 {% block app_content %}
-<div class="row g-4 justify-content-center">
-  <div class="col-lg-7">
-    <form method="post" class="card app-card p-4">
-      <h5 class="mb-1"><i class="bi bi-plus-circle me-2 text-green"></i>New Deposit</h5>
-      <p class="text-muted small mb-4">
-        Enter the amount the member should <strong>receive</strong>. The tiered service fee is added automatically.
-      </p>
 
-      <label class="form-label">Amount You Receive (KES)</label>
-      <div class="input-group input-group-lg mb-4">
-        <span class="input-group-text">KES</span>
-        <input type="number" name="amount" id="depositAmount" class="form-control fee-amount-input"
-               placeholder="e.g. 10000" min="1" max="500000" step="100" inputmode="numeric" required autofocus>
-      </div>
+<div class="row justify-content-center">
 
-      <div class="card fee-calc-card p-4 mb-4" data-fee-calculator>
-        <h6 class="mb-3"><i class="bi bi-calculator me-2 text-green"></i>Payment Breakdown</h6>
-        <div class="fee-row"><span>You Receive</span><strong id="feeReceive">KES 0</strong></div>
-        <div class="fee-row"><span>Service Fee</span><strong id="feeFee" class="text-muted">KES 0</strong></div>
-        <hr>
-        <div class="fee-row fee-total"><span>Total To Pay (M-PESA)</span><strong id="feeTotal" class="text-green">KES 0</strong></div>
-        <p class="small text-muted mt-3 mb-0" id="feeHint">Enter an amount to see the exact breakdown.</p>
-      </div>
+    <div class="col-lg-7 col-xl-6">
 
-      <button class="btn btn-grad btn-lg w-100" type="submit">
-        <i class="bi bi-phone me-2"></i>Continue to STK Push
-      </button>
-      <a href="{{ url_for('admin.member_edit', member_id=member.id) }}" class="btn btn-light btn-lg w-100 mt-2">Cancel</a>
-    </form>
-  </div>
+        <!-- MEMBER SUMMARY -->
+        <div class="card app-card mb-4">
 
-  <div class="col-lg-5">
-    <div class="card app-card p-4 mb-4">
-      <h6 class="mb-3"><i class="bi bi-person me-2 text-green"></i>Member</h6>
-      <div class="d-flex align-items-center gap-3">
-        <span class="avatar-circle avatar-lg">{{ member.initials() }}</span>
-        <div>
-          <strong class="d-block">{{ member.full_name() }}</strong>
-          <small class="text-muted">{{ member.phone }} · Limit {{ member.credit_limit|kes }}</small>
+            <div class="card-body">
+
+                <div class="d-flex align-items-center gap-3">
+
+                    <div class="avatar-circle avatar-lg">
+                        {{ user.initials() }}
+                    </div>
+
+                    <div>
+
+                        <h5 class="fw-bold mb-1">
+                            {{ user.full_name() }}
+                        </h5>
+
+                        <div class="text-muted small">
+                            {{ user.phone }}
+                        </div>
+
+                        <div class="text-muted small">
+                            {{ user.email }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
-      </div>
+
+
+        <!-- CREDIT FORM -->
+        <div class="card app-card">
+
+            <div class="card-header app-card-header">
+
+                <h6 class="fw-bold mb-1">
+                    <i class="bi bi-wallet2 me-2"></i>
+                    Credit Member Wallet
+                </h6>
+
+                <small class="text-muted">
+                    Add funds directly to this member's available balance.
+                </small>
+
+            </div>
+
+
+            <div class="card-body">
+
+                <form
+                    method="POST"
+                    action="{{ url_for('admin.member_deposit', user_id=user.id) }}"
+                >
+
+                    {{ form.hidden_tag() }}
+
+                    <!-- AMOUNT -->
+
+                    <div class="mb-4">
+
+                        {{ form.receive_amount.label(
+                            class="form-label fw-semibold"
+                        ) }}
+
+                        {{ form.receive_amount(
+                            class="form-control form-control-lg",
+                            placeholder="e.g. 10000",
+                            min="1",
+                            max="500000",
+                            step="100",
+                            inputmode="numeric",
+                            id="depositAmount",
+                            autofocus=True
+                        ) }}
+
+                        {% if form.receive_amount.errors %}
+
+                            <div class="text-danger small mt-1">
+
+                                {% for error in form.receive_amount.errors %}
+                                    <div>{{ error }}</div>
+                                {% endfor %}
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- FEE BREAKDOWN -->
+
+                    <div
+                        class="card fee-calc-card p-4 mb-4"
+                        data-fee-calculator
+                    >
+
+                        <h6 class="mb-3">
+
+                            <i class="bi bi-calculator me-2 text-green"></i>
+
+                            Credit Breakdown
+
+                        </h6>
+
+
+                        <div class="fee-row">
+
+                            <span>
+                                Member Receives
+                            </span>
+
+                            <strong id="feeReceive">
+                                KES 0
+                            </strong>
+
+                        </div>
+
+
+                        <div class="fee-row">
+
+                            <span>
+                                Service Fee
+                            </span>
+
+                            <strong
+                                id="feeFee"
+                                class="text-muted"
+                            >
+                                KES 0
+                            </strong>
+
+                        </div>
+
+
+                        <hr>
+
+
+                        <div class="fee-row fee-total">
+
+                            <span>
+                                Total
+                            </span>
+
+                            <strong
+                                id="feeTotal"
+                                class="text-green"
+                            >
+                                KES 0
+                            </strong>
+
+                        </div>
+
+
+                        <p
+                            class="small text-muted mt-3 mb-0"
+                            id="feeHint"
+                        >
+                            Enter an amount to see the exact breakdown.
+
+                        </p>
+
+                    </div>
+
+
+                    <!-- OPTIONAL BONUS NOTE -->
+
+                    <div class="alert alert-info small">
+
+                        <i class="bi bi-info-circle me-2"></i>
+
+                        This action credits the member's wallet and records
+                        the transaction as an admin credit.
+
+                    </div>
+
+
+                    <!-- SUBMIT -->
+
+                    <button
+                        class="btn btn-grad btn-lg w-100"
+                        type="submit"
+                    >
+
+                        <i class="bi bi-wallet2 me-2"></i>
+
+                        Credit Member
+
+                    </button>
+
+
+                    <!-- CANCEL -->
+
+                    <a
+                        href="{{ url_for(
+                            'admin.member_detail',
+                            user_id=user.id
+                        ) }}"
+                        class="btn btn-light btn-lg w-100 mt-2"
+                    >
+
+                        <i class="bi bi-arrow-left me-2"></i>
+
+                        Cancel
+
+                    </a>
+
+                </form>
+
+            </div>
+
+        </div>
+
     </div>
-    <div class="card app-card p-4">
-      <h6 class="mb-3"><i class="bi bi-table me-2 text-green"></i>Service Fee Table</h6>
-      <div class="table-responsive" style="max-height: 380px;">
-        <table class="table table-sm app-table mb-0">
-          <thead><tr><th>You Receive (KES)</th><th class="text-end">Service Fee (KES)</th></tr></thead>
-          <tbody>
-            {% for low, high, fee in tiers %}
-            <tr>
-              <td class="small">{{ '{:,}'.format(low) }} – {{ '{:,}'.format(high) }}</td>
-              <td class="text-end fw-semibold small">{{ '{:,}'.format(fee) }}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+
 </div>
+
+
+<!-- =====================================================
+     FEE CALCULATOR
+====================================================== -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const amountInput = document.getElementById("depositAmount");
+
+    const receiveElement = document.getElementById("feeReceive");
+    const feeElement = document.getElementById("feeFee");
+    const totalElement = document.getElementById("feeTotal");
+    const hintElement = document.getElementById("feeHint");
+
+
+    if (!amountInput) {
+        return;
+    }
+
+
+    function formatKES(value) {
+
+        return "KES " + Number(value || 0).toLocaleString("en-KE");
+
+    }
+
+
+    function updateBreakdown() {
+
+        const amount = parseInt(amountInput.value || "0", 10);
+
+
+        if (!amount || amount <= 0) {
+
+            receiveElement.textContent = formatKES(0);
+            feeElement.textContent = formatKES(0);
+            totalElement.textContent = formatKES(0);
+
+            hintElement.textContent =
+                "Enter an amount to see the exact breakdown.";
+
+            return;
+
+        }
+
+
+        /*
+         * The backend remains the source of truth.
+         *
+         * This visual calculation is only a preview.
+         * The actual fee is calculated again by
+         * app/services/fees.py when the form is submitted.
+         */
+
+        let fee = 0;
+
+
+        /*
+         * Keep this preview conservative.
+         * The server calculation determines the final amount.
+         */
+
+        if (amount >= 1000 && amount < 5000) {
+            fee = 100;
+        }
+        else if (amount >= 5000 && amount < 10000) {
+            fee = 200;
+        }
+        else if (amount >= 10000 && amount < 20000) {
+            fee = 300;
+        }
+        else if (amount >= 20000) {
+            fee = 500;
+        }
+
+
+        const total = amount + fee;
+
+
+        receiveElement.textContent =
+            formatKES(amount);
+
+        feeElement.textContent =
+            formatKES(fee);
+
+        totalElement.textContent =
+            formatKES(total);
+
+        hintElement.textContent =
+            "Final fees are calculated by the server.";
+
+    }
+
+
+    amountInput.addEventListener(
+        "input",
+        updateBreakdown
+    );
+
+
+    updateBreakdown();
+
+});
+
+</script>
+
 {% endblock %}

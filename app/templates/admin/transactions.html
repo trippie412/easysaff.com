@@ -1,67 +1,549 @@
 {% extends 'admin_base.html' %}
+
 {% block active_page %}transactions{% endblock %}
 {% block page_title %}Transactions{% endblock %}
-{% block page_subtitle %}Complete platform ledger{% endblock %}
+{% block page_subtitle %}Complete platform transaction ledger{% endblock %}
 
 {% block app_content %}
+
 {% from 'partials/_status_badge.html' import status_badge %}
+
 {% set current_type = request.args.get('type', '') %}
 {% set current_status = request.args.get('status', '') %}
+{% set search_query = request.args.get('q', '') %}
 
 <div class="card app-card">
-  <div class="card-header app-card-header flex-wrap gap-2">
-    <div class="d-flex flex-wrap gap-2 align-items-center">
-      <span class="small text-muted me-1">Type:</span>
-      <a href="{{ url_for('admin.transactions', status=current_status) }}" class="btn btn-sm {{ 'btn-grad' if not current_type else 'btn-light' }}">All</a>
-      {% for t in ['loan_fee', 'deposit', 'repayment'] %}
-      <a href="{{ url_for('admin.transactions', type=t, status=current_status) }}" class="btn btn-sm {{ 'btn-grad' if current_type == t else 'btn-light' }}">
-        {{ t|replace('_', ' ')|title }}
-      </a>
-      {% endfor %}
-      <span class="small text-muted ms-2 me-1">Status:</span>
-      <a href="{{ url_for('admin.transactions', type=current_type) }}" class="btn btn-sm {{ 'btn-grad' if not current_status else 'btn-light' }}">All</a>
-      {% for s in ['pending', 'completed', 'failed'] %}
-      <a href="{{ url_for('admin.transactions', type=current_type, status=s) }}" class="btn btn-sm {{ 'btn-grad' if current_status == s else 'btn-light' }}">
-        {{ s|title }}
-      </a>
-      {% endfor %}
-    </div>
-  </div>
 
-  <div class="table-responsive">
-    <table class="table app-table align-middle mb-0">
-      <thead>
-        <tr>
-          <th>Reference</th>
-          <th>Member</th>
-          <th class="text-center">Type</th>
-          <th class="text-end">Receive</th>
-          <th class="text-end">Fee</th>
-          <th class="text-end">Total</th>
-          <th class="text-center">Status</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for t in transactions %}
-        <tr>
-          <td class="small text-muted">{{ t.reference }}</td>
-          <td>
-            <strong class="d-block">{{ t.user.full_name() }}</strong>
-            <small class="text-muted">{{ t.user.phone }}</small>
-          </td>
-          <td class="text-center"><span class="badge bg-light text-dark">{{ t.type|replace('_', ' ')|title }}</span></td>
-          <td class="text-end fw-semibold">{{ t.receive_amount|kes }}</td>
-          <td class="text-end text-muted">{{ t.service_fee|kes }}</td>
-          <td class="text-end fw-semibold text-green">{{ t.total_amount|kes }}</td>
-          <td class="text-center">{{ status_badge(t.status) }}</td>
-          <td class="small text-muted">{{ t.created_at.strftime('%d %b %Y, %H:%M') }}</td>
-        </tr>
-        {% else %}
-        <tr><td colspan="8" class="text-center text-muted py-5">No transactions found.</td></tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+    <!-- =====================================================
+         HEADER / FILTERS
+         ===================================================== -->
+
+    <div class="card-header app-card-header">
+
+        <div class="w-100">
+
+            <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+
+                <div>
+                    <h5 class="mb-1 fw-bold">
+                        <i class="bi bi-arrow-left-right me-2"></i>
+                        All Transactions
+                    </h5>
+
+                    <small class="text-muted">
+                        Every transaction performed across the platform.
+                    </small>
+                </div>
+
+            </div>
+
+
+            <!-- SEARCH -->
+
+            <form
+                method="get"
+                action="{{ url_for('admin.transactions') }}"
+                class="d-flex flex-wrap gap-2 mb-3"
+            >
+
+                {% if current_type %}
+                    <input
+                        type="hidden"
+                        name="type"
+                        value="{{ current_type }}"
+                    >
+                {% endif %}
+
+                {% if current_status %}
+                    <input
+                        type="hidden"
+                        name="status"
+                        value="{{ current_status }}"
+                    >
+                {% endif %}
+
+                <input
+                    type="search"
+                    name="q"
+                    class="form-control form-control-sm"
+                    style="min-width:260px; max-width:380px;"
+                    placeholder="Search member, phone, email or reference..."
+                    value="{{ search_query }}"
+                >
+
+                <button
+                    type="submit"
+                    class="btn btn-sm btn-outline-green"
+                >
+                    <i class="bi bi-search me-1"></i>
+                    Search
+                </button>
+
+                {% if search_query or current_type or current_status %}
+
+                    <a
+                        href="{{ url_for('admin.transactions') }}"
+                        class="btn btn-sm btn-light"
+                    >
+                        <i class="bi bi-x-circle me-1"></i>
+                        Clear
+                    </a>
+
+                {% endif %}
+
+            </form>
+
+
+            <!-- TYPE FILTER -->
+
+            <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+
+                <span class="small text-muted me-1">
+                    Type:
+                </span>
+
+                <a
+                    href="{{ url_for(
+                        'admin.transactions',
+                        status=current_status,
+                        q=search_query
+                    ) }}"
+                    class="btn btn-sm {{ 'btn-grad' if not current_type else 'btn-light' }}"
+                >
+                    All
+                </a>
+
+                <a
+                    href="{{ url_for(
+                        'admin.transactions',
+                        type='deposit',
+                        status=current_status,
+                        q=search_query
+                    ) }}"
+                    class="btn btn-sm {{ 'btn-grad' if current_type == 'deposit' else 'btn-light' }}"
+                >
+                    Deposits
+                </a>
+
+                <a
+                    href="{{ url_for(
+                        'admin.transactions',
+                        type='admin_deposit',
+                        status=current_status,
+                        q=search_query
+                    ) }}"
+                    class="btn btn-sm {{ 'btn-grad' if current_type == 'admin_deposit' else 'btn-light' }}"
+                >
+                    Admin Deposits
+                </a>
+
+                <a
+                    href="{{ url_for(
+                        'admin.transactions',
+                        type='loan_repayment',
+                        status=current_status,
+                        q=search_query
+                    ) }}"
+                    class="btn btn-sm {{ 'btn-grad' if current_type == 'loan_repayment' else 'btn-light' }}"
+                >
+                    Loan Repayments
+                </a>
+
+                <a
+                    href="{{ url_for(
+                        'admin.transactions',
+                        type='admin_bonus',
+                        status=current_status,
+                        q=search_query
+                    ) }}"
+                    class="btn btn-sm {{ 'btn-grad' if current_type == 'admin_bonus' else 'btn-light' }}"
+                >
+                    Bonuses
+                </a>
+
+            </div>
+
+
+            <!-- STATUS FILTER -->
+
+            <div class="d-flex flex-wrap align-items-center gap-2">
+
+                <span class="small text-muted me-1">
+                    Status:
+                </span>
+
+                <a
+                    href="{{ url_for(
+                        'admin.transactions',
+                        type=current_type,
+                        q=search_query
+                    ) }}"
+                    class="btn btn-sm {{ 'btn-grad' if not current_status else 'btn-light' }}"
+                >
+                    All
+                </a>
+
+                {% for s in ['pending', 'completed', 'failed'] %}
+
+                    <a
+                        href="{{ url_for(
+                            'admin.transactions',
+                            type=current_type,
+                            status=s,
+                            q=search_query
+                        ) }}"
+                        class="btn btn-sm {{ 'btn-grad' if current_status == s else 'btn-light' }}"
+                    >
+                        {{ s|title }}
+                    </a>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         TRANSACTION TABLE
+         ===================================================== -->
+
+    <div class="table-responsive">
+
+        <table class="table app-table align-middle mb-0">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Reference
+                    </th>
+
+                    <th>
+                        Member
+                    </th>
+
+                    <th>
+                        Phone
+                    </th>
+
+                    <th class="text-center">
+                        Type
+                    </th>
+
+                    <th class="text-end">
+                        Receive
+                    </th>
+
+                    <th class="text-end">
+                        Fee
+                    </th>
+
+                    <th class="text-end">
+                        Total
+                    </th>
+
+                    <th class="text-center">
+                        Status
+                    </th>
+
+                    <th class="text-center">
+                        STK
+                    </th>
+
+                    <th>
+                        Date
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for t in transactions %}
+
+                    <tr>
+
+                        <!-- REFERENCE -->
+
+                        <td>
+
+                            <strong class="small">
+                                {{ t.reference or '—' }}
+                            </strong>
+
+                            {% if t.description %}
+
+                                <small class="d-block text-muted">
+                                    {{ t.description }}
+                                </small>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- MEMBER -->
+
+                        <td>
+
+                            {% if t.user %}
+
+                                <strong class="d-block">
+                                    {{ t.user.full_name() }}
+                                </strong>
+
+                                <small class="text-muted">
+                                    {{ t.user.email }}
+                                </small>
+
+                            {% else %}
+
+                                <span class="text-muted">
+                                    Unknown user
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- PHONE -->
+
+                        <td class="small">
+
+                            {{ t.phone or (t.user.phone if t.user else '—') }}
+
+                        </td>
+
+
+                        <!-- TYPE -->
+
+                        <td class="text-center">
+
+                            {% if t.kind == 'deposit' %}
+
+                                <span class="badge bg-success-subtle text-success-emphasis">
+                                    Deposit
+                                </span>
+
+                            {% elif t.kind == 'admin_deposit' %}
+
+                                <span class="badge bg-primary-subtle text-primary-emphasis">
+                                    Admin Deposit
+                                </span>
+
+                            {% elif t.kind == 'admin_bonus' %}
+
+                                <span class="badge bg-warning-subtle text-warning-emphasis">
+                                    Bonus
+                                </span>
+
+                            {% elif t.kind == 'loan_repayment' %}
+
+                                <span class="badge bg-info-subtle text-info-emphasis">
+                                    Loan Repayment
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-light text-dark">
+                                    {{ t.kind|replace('_', ' ')|title }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- RECEIVE -->
+
+                        <td class="text-end fw-semibold">
+
+                            {{ (t.receive_amount or 0)|kes }}
+
+                        </td>
+
+
+                        <!-- FEE -->
+
+                        <td class="text-end text-muted">
+
+                            {{ (t.service_fee or 0)|kes }}
+
+                        </td>
+
+
+                        <!-- TOTAL -->
+
+                        <td class="text-end fw-semibold text-green">
+
+                            {{ (t.total_amount or 0)|kes }}
+
+                        </td>
+
+
+                        <!-- STATUS -->
+
+                        <td class="text-center">
+
+                            {{ status_badge(t.status or 'pending') }}
+
+                        </td>
+
+
+                        <!-- STK STATUS -->
+
+                        <td class="text-center">
+
+                            {% if t.stk_status == 'success' %}
+
+                                <span
+                                    class="badge bg-success-subtle text-success-emphasis"
+                                    title="STK payment successful"
+                                >
+                                    <i class="bi bi-check-circle-fill"></i>
+                                </span>
+
+                            {% elif t.stk_status == 'failed' %}
+
+                                <span
+                                    class="badge bg-danger-subtle text-danger-emphasis"
+                                    title="STK payment failed"
+                                >
+                                    <i class="bi bi-x-circle-fill"></i>
+                                </span>
+
+                            {% elif t.stk_status == 'pending' %}
+
+                                <span
+                                    class="badge bg-warning-subtle text-warning-emphasis"
+                                    title="STK payment pending"
+                                >
+                                    <i class="bi bi-clock-fill"></i>
+                                </span>
+
+                            {% else %}
+
+                                <span class="text-muted">
+                                    —
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- DATE -->
+
+                        <td class="small text-muted">
+
+                            {% if t.created_at %}
+
+                                {{ t.created_at.strftime('%d %b %Y, %H:%M') }}
+
+                            {% else %}
+
+                                —
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="10"
+                            class="text-center text-muted py-5"
+                        >
+
+                            <div class="mb-3">
+
+                                <i
+                                    class="bi bi-receipt"
+                                    style="font-size:3rem;"
+                                ></i>
+
+                            </div>
+
+                            <h6 class="fw-bold">
+                                No transactions found
+                            </h6>
+
+                            {% if search_query %}
+
+                                <p class="small mb-0">
+                                    No transactions matched
+                                    <strong>{{ search_query }}</strong>.
+                                </p>
+
+                            {% elif current_type or current_status %}
+
+                                <p class="small mb-0">
+                                    No transactions match the selected filters.
+                                </p>
+
+                            {% else %}
+
+                                <p class="small mb-0">
+                                    There are currently no transactions.
+                                </p>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <div class="card-footer bg-transparent border-top">
+
+        <div class="small text-muted">
+
+            Showing
+            <strong>{{ transactions|length }}</strong>
+            transaction{{ '' if transactions|length == 1 else 's' }}
+
+            {% if current_type %}
+                · Type:
+                <strong>
+                    {{ current_type|replace('_', ' ')|title }}
+                </strong>
+            {% endif %}
+
+            {% if current_status %}
+                · Status:
+                <strong>
+                    {{ current_status|title }}
+                </strong>
+            {% endif %}
+
+        </div>
+
+    </div>
+
 </div>
+
 {% endblock %}
