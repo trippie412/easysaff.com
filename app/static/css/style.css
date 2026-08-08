@@ -594,292 +594,496 @@ a:hover { color: var(--green); }
   }
 }
 /* =========================================================
-   MOBILE DASHBOARD - COMPACT ONE-SCREEN LAYOUT
+   MOBILE DASHBOARD
+   Compact, clean and responsive layout
    ========================================================= */
 
 @media (max-width: 576px) {
 
-    /* -----------------------------------------------------
-       MAIN DASHBOARD SPACING
-       ----------------------------------------------------- */
+    /* =====================================================
+       PAGE / CONTAINER
+       ===================================================== */
 
-    .dashboard-container {
-        padding: 8px !important;
+    .dashboard-container,
+    .dashboard-page {
+        padding: 6px !important;
     }
 
     .container,
     .container-fluid {
-        padding-left: 10px !important;
-        padding-right: 10px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+    }
+
+    /* Reduce vertical spacing from Bootstrap rows */
+    .row {
+        --bs-gutter-x: 8px !important;
+        --bs-gutter-y: 8px !important;
+    }
+
+    .row.g-3 {
+        --bs-gutter-x: 8px !important;
+        --bs-gutter-y: 8px !important;
     }
 
 
-    /* -----------------------------------------------------
+    /* =====================================================
        4 SUMMARY CARDS
-       2 COLUMNS × 2 ROWS
-       ----------------------------------------------------- */
-
-    .dashboard-grid {
-        display: grid !important;
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        gap: 8px !important;
-        margin-bottom: 10px !important;
-    }
+       Outstanding / Active / Borrowed / Completed
+       ===================================================== */
 
     .stat-card {
-        height: 125px !important;
-        min-height: 125px !important;
-        padding: 10px 6px !important;
+        height: 108px !important;
+        min-height: 108px !important;
+
+        padding: 8px 5px !important;
         margin: 0 !important;
+
         border-radius: 14px !important;
 
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
+
+        overflow: visible !important;
     }
 
-    /* Stat card icon */
+    /* Icon */
 
-    .stat-card .stat-icon,
-    .stat-card > div:first-child {
-        width: 46px !important;
-        height: 46px !important;
-        min-height: 46px !important;
+    .stat-card .stat-icon {
+        width: 42px !important;
+        height: 42px !important;
+        min-width: 42px !important;
+        min-height: 42px !important;
+
+        margin-top: -18px !important;
         margin-bottom: 5px !important;
+
+        border-radius: 12px !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        font-size: 1rem !important;
     }
 
-    .stat-card i {
-        font-size: 1.25rem !important;
+    .stat-card .stat-icon i {
+        font-size: 1.1rem !important;
     }
 
-    /* Stat title */
+    /* Title */
 
-    .stat-card h6,
-    .stat-card h5,
-    .stat-card .text-muted {
-        font-size: 0.72rem !important;
-        line-height: 1.15 !important;
-        margin-bottom: 3px !important;
+    .stat-card .stat-label {
+        display: block !important;
+
+        font-size: 0.68rem !important;
+        line-height: 1.05 !important;
+
+        text-align: center !important;
+
+        margin: 0 0 4px !important;
+
+        color: #64748b !important;
+        white-space: nowrap !important;
     }
 
-    /* Amount */
+    /* Main number */
 
-    .stat-card h3,
-    .stat-card h4 {
-        font-size: 1.25rem !important;
+    .stat-card .stat-value {
+        display: block !important;
+
+        font-size: 1.15rem !important;
         line-height: 1.1 !important;
-        margin: 3px 0 !important;
+
+        margin: 0 0 3px !important;
+
+        text-align: center !important;
     }
 
-    /* Bottom description */
+    /* Description */
 
     .stat-card small {
-        font-size: 0.65rem !important;
+        display: block !important;
+
+        font-size: 0.61rem !important;
         line-height: 1 !important;
+
+        text-align: center !important;
+        white-space: nowrap !important;
     }
 
 
-    /* -----------------------------------------------------
+    /* =====================================================
        MONTHLY SPENDING
-       ----------------------------------------------------- */
+       ===================================================== */
 
-    .card.mb-4 {
-        margin-bottom: 10px !important;
+    .app-card {
+        border-radius: 15px !important;
+        overflow: hidden !important;
     }
 
-    /* Target the spending card */
+    .app-card-header {
+        min-height: 48px !important;
 
-    .dashboard-grid + .card {
-        border-radius: 14px !important;
+        padding: 10px 13px !important;
+
+        display: flex !important;
+        align-items: center !important;
     }
 
-    .dashboard-grid + .card .card-header {
-        padding: 10px 12px !important;
-    }
-
-    .dashboard-grid + .card .card-header h5 {
+    .app-card-header h5 {
         font-size: 0.95rem !important;
+        line-height: 1.1 !important;
+        margin: 0 !important;
     }
 
-    .dashboard-grid + .card .card-body {
-        height: 90px !important;
-        min-height: 90px !important;
-        padding: 10px !important;
+    /* Monthly spending card */
+
+    #spendChart {
+        height: 70px !important;
+        max-height: 70px !important;
+    }
+
+    .app-card .card-body {
+        padding: 8px !important;
+    }
+
+    /* Make spending area much shorter */
+
+    #spendChart {
+        display: block !important;
     }
 
 
-    /* -----------------------------------------------------
+    /* =====================================================
        NOTIFICATIONS
-       ----------------------------------------------------- */
+       ===================================================== */
 
-    .dashboard-grid + .card + .card {
-        border-radius: 14px !important;
-        margin-bottom: 10px !important;
+    .mini-list {
+        max-height: 62px !important;
+        overflow: hidden !important;
     }
 
-    .dashboard-grid + .card + .card .card-header {
-        padding: 10px 12px !important;
+    .mini-list .list-group-item {
+        padding: 8px 10px !important;
+        font-size: 0.72rem !important;
     }
 
-    .dashboard-grid + .card + .card .card-header h5 {
-        font-size: 0.95rem !important;
+    .mini-list .mini-icon {
+        width: 28px !important;
+        height: 28px !important;
+        min-width: 28px !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        font-size: 0.75rem !important;
     }
 
-    .dashboard-grid + .card + .card .card-body {
-        min-height: 55px !important;
-        padding: 10px !important;
+    .mini-list strong {
+        font-size: 0.72rem !important;
+    }
+
+    .mini-list small {
+        font-size: 0.62rem !important;
+    }
+
+    /* Empty notifications message */
+
+    .mini-list .text-center {
+        padding: 12px 5px !important;
+        font-size: 0.75rem !important;
     }
 
 
-    /* -----------------------------------------------------
+    /* =====================================================
        QUICK ACTIONS
-       ----------------------------------------------------- */
+       New Loan / Deposit / Messages / Support
+       ===================================================== */
 
-    .quick-actions {
-        display: grid !important;
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        gap: 7px !important;
+    /* The actual HTML uses .row, not .quick-actions */
+
+    .row.g-3.mb-4:has(.quick-card) {
+        margin-top: 0 !important;
         margin-bottom: 10px !important;
     }
 
     .quick-card {
-        min-height: 48px !important;
-        height: 48px !important;
-        padding: 7px 10px !important;
-        border-radius: 9px !important;
+        min-height: 70px !important;
+        height: 70px !important;
+
+        padding: 10px 12px !important;
+
+        border-radius: 13px !important;
 
         display: flex !important;
         align-items: center !important;
-        gap: 6px !important;
+        justify-content: flex-start !important;
+
+        gap: 9px !important;
+
+        text-decoration: underline !important;
     }
 
     .quick-card i {
-        font-size: 0.9rem !important;
+        font-size: 1.25rem !important;
+
+        flex-shrink: 0 !important;
     }
 
-    .quick-card h6,
-    .quick-card strong,
     .quick-card span {
-        font-size: 0.82rem !important;
+        font-size: 0.92rem !important;
+        font-weight: 600 !important;
+
+        line-height: 1.1 !important;
     }
 
 
-    /* -----------------------------------------------------
+    /* =====================================================
        RECENT TRANSACTIONS
-       ----------------------------------------------------- */
+       ===================================================== */
 
-    .quick-actions + .card {
-        border-radius: 14px !important;
-        margin-bottom: 10px !important;
+    .app-table {
+        font-size: 0.68rem !important;
     }
 
-    .quick-actions + .card .card-header {
-        padding: 10px 12px !important;
-    }
-
-    .quick-actions + .card .card-header h5 {
-        font-size: 0.95rem !important;
-    }
-
-    .quick-actions + .card .card-body {
-        padding: 0 !important;
-    }
-
-    /* Smaller transaction table */
-
-    .quick-actions + .card table {
-        font-size: 0.65rem !important;
-    }
-
-    .quick-actions + .card th,
-    .quick-actions + .card td {
+    .app-table th,
+    .app-table td {
         padding: 7px 5px !important;
+    }
+
+    .app-table th {
+        font-size: 0.6rem !important;
+    }
+
+    .txn-icon {
+        width: 25px !important;
+        height: 25px !important;
+
+        flex-shrink: 0 !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .app-table strong {
+        font-size: 0.68rem !important;
+    }
+
+    .app-table small {
+        font-size: 0.58rem !important;
+    }
+
+    /* Hide less important transaction columns on mobile */
+
+    .app-table th:nth-child(2),
+    .app-table td:nth-child(2) {
+        display: none !important;
     }
 
     /* New deposit button */
 
-    .quick-actions + .card .btn {
-        font-size: 0.68rem !important;
+    .app-card-header .btn {
+        font-size: 0.65rem !important;
+
         padding: 5px 8px !important;
-        border-radius: 15px !important;
+
+        border-radius: 14px !important;
     }
 
 
-    /* -----------------------------------------------------
-       ALERT / WELCOME MESSAGE
-       ----------------------------------------------------- */
+    /* =====================================================
+       WELCOME / FLASH ALERT
+       ===================================================== */
 
     .alert {
-        margin-bottom: 8px !important;
-        padding: 9px 11px !important;
-        font-size: 0.78rem !important;
+        margin: 5px 0 8px !important;
+
+        padding: 8px 10px !important;
+
+        font-size: 0.75rem !important;
+
         border-radius: 9px !important;
     }
 
 
-    /* -----------------------------------------------------
-       GENERAL TYPOGRAPHY
-       ----------------------------------------------------- */
+    /* =====================================================
+       DASHBOARD HEADER
+       ===================================================== */
 
     .dashboard-page h1 {
-        font-size: 1.25rem !important;
+        font-size: 1.15rem !important;
+        line-height: 1.1 !important;
     }
 
     .dashboard-page h2 {
-        font-size: 1.1rem !important;
+        font-size: 1rem !important;
     }
 
     .dashboard-page h5 {
         font-size: 0.95rem !important;
     }
-
 }
 
 
 /* =========================================================
    VERY SMALL PHONES
+   390px AND BELOW
    ========================================================= */
 
 @media (max-width: 390px) {
 
-    .dashboard-grid {
-        gap: 6px !important;
+    .container,
+    .container-fluid {
+        padding-left: 6px !important;
+        padding-right: 6px !important;
     }
+
+    .row,
+    .row.g-3 {
+        --bs-gutter-x: 6px !important;
+        --bs-gutter-y: 6px !important;
+    }
+
+
+    /* Smaller summary cards */
 
     .stat-card {
-        height: 112px !important;
-        min-height: 112px !important;
-        padding: 7px 5px !important;
+        height: 100px !important;
+        min-height: 100px !important;
+
+        padding: 6px 4px !important;
+
+        border-radius: 12px !important;
     }
 
-    .stat-card .stat-icon,
-    .stat-card > div:first-child {
-        width: 40px !important;
-        height: 40px !important;
-        min-height: 40px !important;
+    .stat-card .stat-icon {
+        width: 38px !important;
+        height: 38px !important;
+        min-width: 38px !important;
+        min-height: 38px !important;
+
+        margin-top: -15px !important;
+        margin-bottom: 4px !important;
+
+        border-radius: 11px !important;
     }
 
-    .stat-card h3,
-    .stat-card h4 {
+    .stat-card .stat-icon i {
+        font-size: 0.95rem !important;
+    }
+
+    .stat-card .stat-label {
+        font-size: 0.62rem !important;
+    }
+
+    .stat-card .stat-value {
+        font-size: 1.05rem !important;
+    }
+
+    .stat-card small {
+        font-size: 0.57rem !important;
+    }
+
+
+    /* Spending */
+
+    #spendChart {
+        height: 55px !important;
+        max-height: 55px !important;
+    }
+
+    .app-card-header {
+        min-height: 44px !important;
+        padding: 8px 10px !important;
+    }
+
+    .app-card-header h5 {
+        font-size: 0.88rem !important;
+    }
+
+
+    /* Notifications */
+
+    .mini-list {
+        max-height: 55px !important;
+    }
+
+    .mini-list .text-center {
+        padding: 10px 4px !important;
+        font-size: 0.7rem !important;
+    }
+
+
+    /* Quick actions */
+
+    .quick-card {
+        height: 64px !important;
+        min-height: 64px !important;
+
+        padding: 8px 10px !important;
+
+        border-radius: 12px !important;
+
+        gap: 7px !important;
+    }
+
+    .quick-card i {
         font-size: 1.1rem !important;
     }
 
-    .stat-card h6,
-    .stat-card h5,
-    .stat-card .text-muted {
-        font-size: 0.67rem !important;
+    .quick-card span {
+        font-size: 0.82rem !important;
+    }
+
+
+    /* Transactions */
+
+    .app-table {
+        font-size: 0.62rem !important;
+    }
+
+    .app-table th,
+    .app-table td {
+        padding: 6px 4px !important;
+    }
+}
+
+
+/* =========================================================
+   EXTRA SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 350px) {
+
+    .stat-card {
+        height: 94px !important;
+        min-height: 94px !important;
+    }
+
+    .stat-card .stat-icon {
+        width: 34px !important;
+        height: 34px !important;
+        min-width: 34px !important;
+        min-height: 34px !important;
+    }
+
+    .stat-card .stat-value {
+        font-size: 0.98rem !important;
     }
 
     .quick-card {
-        height: 44px !important;
-        min-height: 44px !important;
-        padding: 6px 8px !important;
+        height: 58px !important;
+        min-height: 58px !important;
     }
 
-    .quick-card h6,
-    .quick-card strong,
     .quick-card span {
-        font-size: 0.75rem !important;
+        font-size: 0.76rem !important;
     }
 }
