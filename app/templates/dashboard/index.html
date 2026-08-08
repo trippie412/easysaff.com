@@ -8,317 +8,113 @@
 Welcome back, {{ current_user.first_name }} 👋
 {% endblock %}
 
-
 {% block app_content %}
 
 {% from 'partials/_status_badge.html' import status_badge %}
 
 
 <!-- =========================================================
-     MOBILE STAT CARD STYLES
-     ========================================================= -->
-<style>
+     STATISTICS
+========================================================= -->
 
-    /* Desktop stays unchanged */
-    .dashboard-stats .stat-card {
-        position: relative;
-    }
+<!-- Outstanding Balance -->
+<div class="col-6 col-xl-3">
 
-    /* =====================================================
-       MOBILE
-       ===================================================== */
-    @media (max-width: 576px) {
+    <div class="card stat-card">
 
-        /* Make the four cards smaller */
-        .dashboard-stats {
-            --bs-gutter-x: 8px;
-            --bs-gutter-y: 8px;
-            margin-bottom: 14px !important;
-        }
-
-        .dashboard-stats > div {
-            padding-left: 4px;
-            padding-right: 4px;
-        }
-
-        .dashboard-stats .stat-card {
-            min-height: 142px;
-            height: 142px;
-
-            padding: 48px 8px 8px !important;
-
-            border-radius: 16px !important;
-
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-
-            text-align: center;
-        }
-
-        /* Smaller colored icon */
-        .dashboard-stats .stat-icon {
-            width: 48px !important;
-            height: 48px !important;
-
-            min-width: 48px !important;
-            min-height: 48px !important;
-
-            font-size: 1.25rem !important;
-
-            border-radius: 14px !important;
-
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Smaller title */
-        .dashboard-stats .stat-label {
-            font-size: 11px !important;
-            line-height: 1.2 !important;
-
-            margin-top: 3px;
-            margin-bottom: 7px;
-
-            white-space: nowrap;
-        }
-
-        /* Smaller amount */
-        .dashboard-stats .stat-value {
-            font-size: 20px !important;
-            line-height: 1.1 !important;
-
-            margin-bottom: 6px;
-        }
-
-        /* Smaller description */
-        .dashboard-stats .text-muted {
-            font-size: 10px !important;
-            line-height: 1.1 !important;
-        }
-
-
-        /* =================================================
-           MONTHLY SPENDING
-           ================================================= */
-
-        .dashboard-chart-row {
-            margin-bottom: 14px !important;
-        }
-
-        .dashboard-chart-row .app-card {
-            min-height: 250px;
-        }
-
-        .dashboard-chart-row .card-header {
-            padding: 12px 14px !important;
-        }
-
-        .dashboard-chart-row .card-header h5 {
-            font-size: 17px !important;
-        }
-
-        .dashboard-chart-row .card-body {
-            padding: 8px !important;
-        }
-
-
-        /* =================================================
-           NOTIFICATIONS
-           ================================================= */
-
-        .dashboard-notifications .card-header {
-            padding: 12px 14px !important;
-        }
-
-        .dashboard-notifications .card-header h5 {
-            font-size: 17px !important;
-        }
-
-        .dashboard-notifications .card-body {
-            min-height: 82px;
-        }
-
-
-        /* =================================================
-           QUICK ACTIONS
-           ================================================= */
-
-        .dashboard-quick-actions {
-            --bs-gutter-x: 8px;
-            --bs-gutter-y: 8px;
-
-            margin-bottom: 14px !important;
-        }
-
-        .dashboard-quick-actions > div {
-            padding-left: 4px;
-            padding-right: 4px;
-        }
-
-        .dashboard-quick-actions .quick-card {
-            min-height: 70px;
-            height: 70px;
-
-            padding: 10px !important;
-
-            border-radius: 14px !important;
-
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-
-            gap: 8px;
-        }
-
-        .dashboard-quick-actions .quick-card i {
-            font-size: 1.25rem !important;
-        }
-
-        .dashboard-quick-actions .quick-card span {
-            font-size: 14px !important;
-        }
-
-
-        /* =================================================
-           RECENT TRANSACTIONS
-           ================================================= */
-
-        .dashboard-transactions .card-header {
-            padding: 12px 14px !important;
-        }
-
-        .dashboard-transactions .card-header h5 {
-            font-size: 17px !important;
-        }
-
-        .dashboard-transactions .btn {
-            font-size: 11px !important;
-            padding: 5px 9px !important;
-        }
-
-        .dashboard-transactions table {
-            font-size: 11px;
-        }
-
-    }
-
-</style>
-
-
-<!-- =========================================================
-     STAT CARDS
-     ========================================================= -->
-
-<div class="row g-3 mb-4 dashboard-stats">
-
-    <!-- Outstanding Balance -->
-    <div class="col-6 col-xl-3">
-
-        <div class="card stat-card">
-
-            <div class="stat-icon grad-a">
-                <i class="bi bi-cash-stack"></i>
-            </div>
-
-            <span class="stat-label">
-                Outstanding Balance
-            </span>
-
-            <strong class="stat-value">
-                {{ outstanding|kes }}
-            </strong>
-
-            <small class="text-muted">
-                Total to repay
-            </small>
-
+        <div class="stat-icon grad-a">
+            <i class="bi bi-cash-stack"></i>
         </div>
+
+        <span class="stat-label">
+            Outstanding Balance
+        </span>
+
+        <strong class="stat-value">
+            {{ outstanding|kes }}
+        </strong>
+
+        <small class="text-muted">
+            Total to repay
+        </small>
 
     </div>
 
+</div>
 
-    <!-- Active Loans -->
-    <div class="col-6 col-xl-3">
 
-        <div class="card stat-card">
+<!-- Active Loans -->
+<div class="col-6 col-xl-3">
 
-            <div class="stat-icon grad-b">
-                <i class="bi bi-wallet2"></i>
-            </div>
+    <div class="card stat-card">
 
-            <span class="stat-label">
-                Active Loans
-            </span>
-
-            <strong class="stat-value">
-                {{ active_loans }}
-            </strong>
-
-            <small class="text-muted">
-                In repayment
-            </small>
-
+        <div class="stat-icon grad-b">
+            <i class="bi bi-wallet2"></i>
         </div>
+
+        <span class="stat-label">
+            Active Loans
+        </span>
+
+        <strong class="stat-value">
+            {{ active_loans }}
+        </strong>
+
+        <small class="text-muted">
+            In repayment
+        </small>
 
     </div>
 
+</div>
 
-    <!-- Total Borrowed -->
-    <div class="col-6 col-xl-3">
 
-        <div class="card stat-card">
+<!-- Total Borrowed -->
+<div class="col-6 col-xl-3">
 
-            <div class="stat-icon grad-c">
-                <i class="bi bi-graph-up-arrow"></i>
-            </div>
+    <div class="card stat-card">
 
-            <span class="stat-label">
-                Total Borrowed
-            </span>
-
-            <strong class="stat-value">
-                {{ total_borrowed|kes }}
-            </strong>
-
-            <small class="text-muted">
-                All time
-            </small>
-
+        <div class="stat-icon grad-c">
+            <i class="bi bi-graph-up-arrow"></i>
         </div>
+
+        <span class="stat-label">
+            Total Borrowed
+        </span>
+
+        <strong class="stat-value">
+            {{ total_borrowed|kes }}
+        </strong>
+
+        <small class="text-muted">
+            All time
+        </small>
 
     </div>
 
+</div>
 
-    <!-- Completed Loans -->
-    <div class="col-6 col-xl-3">
 
-        <div class="card stat-card">
+<!-- Completed Loans -->
+<div class="col-6 col-xl-3">
 
-            <div class="stat-icon grad-d">
-                <i class="bi bi-patch-check"></i>
-            </div>
+    <div class="card stat-card">
 
-            <span class="stat-label">
-                Completed Loans
-            </span>
-
-            <strong class="stat-value">
-                {{ completed_loans }}
-            </strong>
-
-            <small class="text-muted">
-                Fully repaid
-            </small>
-
+        <div class="stat-icon grad-d">
+            <i class="bi bi-patch-check"></i>
         </div>
+
+        <span class="stat-label">
+            Completed Loans
+        </span>
+
+        <strong class="stat-value">
+            {{ completed_loans }}
+        </strong>
+
+        <small class="text-muted">
+            Fully repaid
+        </small>
 
     </div>
 
@@ -327,206 +123,124 @@ Welcome back, {{ current_user.first_name }} 👋
 
 
 <!-- =========================================================
-     MONTHLY SPENDING + NOTIFICATIONS
-     ========================================================= -->
+     MONTHLY SPENDING + QUICK ACTIONS
+========================================================= -->
 
-<div class="row g-3 mb-4 dashboard-chart-row">
+<!-- Monthly Spending -->
+<div class="col-lg-8">
+
+    <div class="card app-card h-100">
+
+        <div class="card-header app-card-header">
+
+            <h5 class="mb-0">
+
+                <i class="bi bi-bar-chart-line me-2 text-green"></i>
+
+                Monthly Spending
+
+            </h5>
+
+        </div>
 
 
-    <!-- Monthly Spending -->
-    <div class="col-lg-8">
+        <div class="card-body">
 
-        <div class="card app-card h-100">
-
-            <div class="card-header app-card-header">
-
-                <h5 class="mb-0">
-
-                    <i class="bi bi-bar-chart-line me-2 text-green"></i>
-
-                    Monthly Spending
-
-                </h5>
-
-            </div>
-
-            <div class="card-body">
-
-                <canvas
-                    id="spendChart"
-                    data-labels='{{ chart_labels|tojson }}'
-                    data-values='{{ chart_values|tojson }}'
-                    height="110">
-                </canvas>
-
-            </div>
+            <canvas
+                id="spendChart"
+                data-labels='{{ chart_labels|tojson }}'
+                data-values='{{ chart_values|tojson }}'
+                height="110">
+            </canvas>
 
         </div>
 
     </div>
 
+</div>
 
-    <!-- Notifications -->
-    <div class="col-lg-4 dashboard-notifications">
 
-        <div class="card app-card h-100">
+<!-- Quick Actions -->
+<div class="col-lg-4">
 
-            <div
-                class="card-header app-card-header d-flex justify-content-between align-items-center"
+    <div class="row g-3">
+
+
+        <!-- New Loan -->
+        <div class="col-6">
+
+            <a
+                class="card quick-card"
+                href="{{ url_for('loans.apply') }}"
             >
 
-                <h5 class="mb-0">
+                <i class="bi bi-rocket-takeoff"></i>
 
-                    <i class="bi bi-bell me-2 text-green"></i>
+                <span>
+                    New Loan
+                </span>
 
-                    Notifications
-
-                </h5>
-
-                <a
-                    href="{{ url_for('dashboard.notifications') }}"
-                    class="small text-green"
-                >
-                    View all
-                </a>
-
-            </div>
-
-
-            <div class="card-body p-0">
-
-                <ul class="list-group list-group-flush mini-list">
-
-                    {% for n in recent_notifications %}
-
-                    <li
-                        class="list-group-item d-flex gap-3 align-items-start"
-                    >
-
-                        <span class="mini-icon icon-{{ n.category }}">
-
-                            <i class="bi bi-bell"></i>
-
-                        </span>
-
-                        <div>
-
-                            <strong class="d-block">
-                                {{ n.title }}
-                            </strong>
-
-                            <small class="text-muted d-block">
-                                {{ n.message|truncate(90) }}
-                            </small>
-
-                            <small class="text-muted">
-                                {{ n.created_at.strftime('%d %b, %I:%M %p') }}
-                            </small>
-
-                        </div>
-
-                    </li>
-
-                    {% else %}
-
-                    <li
-                        class="list-group-item text-center text-muted py-4"
-                    >
-                        No notifications yet.
-                    </li>
-
-                    {% endfor %}
-
-                </ul>
-
-            </div>
+            </a>
 
         </div>
 
-    </div>
 
-</div>
+        <!-- Deposit -->
+        <div class="col-6">
 
+            <a
+                class="card quick-card"
+                href="{{ url_for('payments.deposit') }}"
+            >
 
+                <i class="bi bi-plus-circle"></i>
 
-<!-- =========================================================
-     QUICK ACTIONS
-     ========================================================= -->
+                <span>
+                    Deposit
+                </span>
 
-<div class="row g-3 mb-4 dashboard-quick-actions">
+            </a>
 
-    <!-- New Loan -->
-    <div class="col-6 col-lg-3">
-
-        <a
-            class="card quick-card"
-            href="{{ url_for('loans.apply') }}"
-        >
-
-            <i class="bi bi-rocket-takeoff"></i>
-
-            <span>
-                New Loan
-            </span>
-
-        </a>
-
-    </div>
+        </div>
 
 
-    <!-- Deposit -->
-    <div class="col-6 col-lg-3">
+        <!-- Messages -->
+        <div class="col-6">
 
-        <a
-            class="card quick-card"
-            href="{{ url_for('payments.deposit') }}"
-        >
+            <a
+                class="card quick-card"
+                href="{{ url_for('dashboard.messages') }}"
+            >
 
-            <i class="bi bi-plus-circle"></i>
+                <i class="bi bi-chat-dots"></i>
 
-            <span>
-                Deposit
-            </span>
+                <span>
+                    Messages
+                </span>
 
-        </a>
+            </a>
 
-    </div>
-
-
-    <!-- Messages -->
-    <div class="col-6 col-lg-3">
-
-        <a
-            class="card quick-card"
-            href="{{ url_for('dashboard.messages') }}"
-        >
-
-            <i class="bi bi-chat-dots"></i>
-
-            <span>
-                Messages
-            </span>
-
-        </a>
-
-    </div>
+        </div>
 
 
-    <!-- Support -->
-    <div class="col-6 col-lg-3">
+        <!-- Support -->
+        <div class="col-6">
 
-        <a
-            class="card quick-card"
-            href="{{ url_for('dashboard.support') }}"
-        >
+            <a
+                class="card quick-card"
+                href="{{ url_for('dashboard.support') }}"
+            >
 
-            <i class="bi bi-headset"></i>
+                <i class="bi bi-headset"></i>
 
-            <span>
-                Support
-            </span>
+                <span>
+                    Support
+                </span>
 
-        </a>
+            </a>
+
+        </div>
+
 
     </div>
 
@@ -536,145 +250,150 @@ Welcome back, {{ current_user.first_name }} 👋
 
 <!-- =========================================================
      RECENT TRANSACTIONS
-     ========================================================= -->
+========================================================= -->
 
-<div class="card app-card dashboard-transactions">
+<div class="col-12">
 
-    <div
-        class="card-header app-card-header d-flex justify-content-between align-items-center flex-wrap gap-2"
-    >
-
-        <h5 class="mb-0">
-
-            <i class="bi bi-arrow-left-right me-2 text-green"></i>
-
-            Recent Transactions
-
-        </h5>
+    <div class="card app-card">
 
 
-        <a
-            href="{{ url_for('payments.deposit') }}"
-            class="btn btn-sm btn-outline-green"
+        <div
+            class="card-header app-card-header d-flex justify-content-between align-items-center flex-wrap gap-2"
         >
-            + New Deposit
-        </a>
 
-    </div>
+            <h5 class="mb-0">
 
+                <i class="bi bi-arrow-left-right me-2 text-green"></i>
 
-    <div class="table-responsive">
+                Recent Transactions
 
-        <table class="table app-table align-middle mb-0">
-
-            <thead>
-
-                <tr>
-
-                    <th>
-                        Description
-                    </th>
-
-                    <th>
-                        Date
-                    </th>
-
-                    <th class="text-end">
-                        Amount Paid
-                    </th>
-
-                    <th class="text-center">
-                        Status
-                    </th>
-
-                </tr>
-
-            </thead>
+            </h5>
 
 
-            <tbody>
+            <a
+                href="{{ url_for('payments.deposit') }}"
+                class="btn btn-sm btn-outline-green"
+            >
+                + New Deposit
+            </a>
 
-                {% for t in recent_transactions %}
-
-                <tr>
-
-                    <td>
-
-                        <div
-                            class="d-flex align-items-center gap-2"
-                        >
-
-                            <span class="txn-icon">
-
-                                <i
-                                    class="bi {{
-                                        'bi-arrow-down-circle'
-                                        if t.kind == 'deposit'
-                                        else 'bi-arrow-up-circle'
-                                    }}"
-                                ></i>
-
-                            </span>
+        </div>
 
 
-                            <div>
+        <div class="table-responsive">
 
-                                <strong class="d-block">
-                                    {{ t.description }}
-                                </strong>
+            <table class="table app-table align-middle mb-0">
 
-                                <small class="text-muted">
-                                    {{ t.reference }}
-                                </small>
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Description
+                        </th>
+
+                        <th>
+                            Date
+                        </th>
+
+                        <th class="text-end">
+                            Amount Paid
+                        </th>
+
+                        <th class="text-center">
+                            Status
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for t in recent_transactions %}
+
+                    <tr>
+
+                        <td>
+
+                            <div
+                                class="d-flex align-items-center gap-2"
+                            >
+
+                                <span class="txn-icon">
+
+                                    <i
+                                        class="bi {{
+                                            'bi-arrow-down-circle'
+                                            if t.kind == 'deposit'
+                                            else 'bi-arrow-up-circle'
+                                        }}"
+                                    ></i>
+
+                                </span>
+
+
+                                <div>
+
+                                    <strong class="d-block">
+                                        {{ t.description }}
+                                    </strong>
+
+                                    <small class="text-muted">
+                                        {{ t.reference }}
+                                    </small>
+
+                                </div>
 
                             </div>
 
-                        </div>
-
-                    </td>
+                        </td>
 
 
-                    <td class="text-muted small">
+                        <td class="text-muted small">
 
-                        {{ t.created_at.strftime('%d %b %Y') }}
+                            {{ t.created_at.strftime('%d %b %Y') }}
 
-                    </td>
-
-
-                    <td class="text-end fw-semibold">
-
-                        {{ t.total_amount|kes }}
-
-                    </td>
+                        </td>
 
 
-                    <td class="text-center">
+                        <td class="text-end fw-semibold">
 
-                        {{ status_badge(t.status) }}
+                            {{ t.total_amount|kes }}
 
-                    </td>
-
-                </tr>
+                        </td>
 
 
-                {% else %}
+                        <td class="text-center">
 
-                <tr>
+                            {{ status_badge(t.status) }}
 
-                    <td
-                        colspan="4"
-                        class="text-center text-muted py-4"
-                    >
-                        No transactions yet.
-                    </td>
+                        </td>
 
-                </tr>
+                    </tr>
 
-                {% endfor %}
 
-            </tbody>
+                    {% else %}
 
-        </table>
+                    <tr>
+
+                        <td
+                            colspan="4"
+                            class="text-center text-muted py-4"
+                        >
+                            No transactions yet.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
 
     </div>
 
