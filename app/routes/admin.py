@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from functools import wraps
 
 from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
@@ -61,35 +62,54 @@ def logout():
 @admin_bp.route("/")
 @admin_required
 def dashboard():
-    # Member statistics
-    total_members = User.query.filter_by(is_admin=False).count()
-    suspended_members = User.query.filter_by(
-        is_admin=False,
-        is_suspended=True,
-    ).count()
+    """
+    Admin dashboard.
 
-    # Loan statistics
-    pending_loans = LoanApplication.query.filter_by(
-        status="pending"
-    ).count()
+    Provides every variable required by admin/dashboard.html.
+    All statistics are calculated from the database in real time.
+    """
 
-    active_loans = LoanApplication.query.filter(
-        LoanApplication.status.in_(["disbursed", "repaying"])
-    ).count()
+    # ---------------------------------------------------------
+    # MEMBER STATISTICS
+    # ---------------------------------------------------------
 
-    # Financial statistics
-    fee_revenue = (
-        db.session.query(
-            db.func.coalesce(
-                db.func.sum(Transaction.service_fee),
-                0,
-            )
-        )
-        .filter(Transaction.status == "completed")
-        .scalar()
-        or 0
+    total_members = (
+        User.query
+        .filter_by(is_admin=False)
+        .count()
     )
 
+    suspended_members = (
+        User.query
+        .filter_by(
+            is_admin=False,
+            is_suspended=True,
+        )
+        .count()
+    )
+
+    # ---------------------------------------------------------
+    # LOAN STATISTICS
+    # ---------------------------------------------------------
+
+    pending_loans = (
+        LoanApplication.query
+        .filter_by(status="pending")
+        .count()
+    )
+
+    active_loans = (
+        LoanApplication.query
+        .filter(
+            LoanApplication.status.in_(
+                ["disbursed", "repaying"]
+            )
+        )
+        .count()
+    )
+
+    # Total amount of loans that have actually been
+    # disbursed, are currently being repaid, or are paid.
     total_disbursed = (
         db.session.query(
             db.func.coalesce(
@@ -106,7 +126,60 @@ def dashboard():
         or 0
     )
 
-    # Recent members
+    # Total amount of loans that have been fully repaid.
+    total_repaid = (
+        db.session.query(
+            db.func.coalesce(
+                db.func.sum(LoanApplication.amount),
+                0,
+            )
+        )
+        .filter(
+            LoanApplication.status == "paid"
+        )
+        .scalar()
+        or 0
+    )
+
+    # ---------------------------------------------------------
+    # TRANSACTION STATISTICS
+    # ---------------------------------------------------------
+
+    total_fees = (
+        db.session.query(
+            db.func.coalesce(
+                db.func.sum(Transaction.service_fee),
+                0,
+            )
+        )
+        .filter(
+            Transaction.status == "completed"
+        )
+        .scalar()
+        or 0
+    )
+
+    txn_count = (
+        Transaction.query
+        .filter_by(status="completed")
+        .count()
+    )
+
+    # ---------------------------------------------------------
+    # RECENT TRANSACTIONS
+    # ---------------------------------------------------------
+
+    recent_transactions = (
+        Transaction.query
+        .order_by(Transaction.created_at.desc())
+        .limit(6)
+        .all()
+    )
+
+    # ---------------------------------------------------------
+    # RECENT MEMBERS
+    # ---------------------------------------------------------
+
     recent_members = (
         User.query
         .filter_by(is_admin=False)
@@ -115,29 +188,80 @@ def dashboard():
         .all()
     )
 
-    # Recent loans
-    recent_loans = (
-        LoanApplication.query
-        .order_by(LoanApplication.created_at.desc())
-        .limit(6)
+    # ---------------------------------------------------------
+    # WEEKLY ACTIVITY CHART
+    # ---------------------------------------------------------
+
+    today = datetime.utcnow().date()
+    start_date = today - timedelta(days=6)
+
+    weekly_transactions = (
+        Transaction.query
+        .filter(
+            Transaction.created_at >= datetime.combine(
+                start_date,
+                datetime.min.time(),
+            )
+        )
         .all()
     )
 
-    # Dashboard statistics expected by admin/dashboard.html
+    # Create exactly seven days for the chart.
+    chart_labels = []
+    chart_values = []
+
+    for i in range(7):
+        day = start_date + timedelta(days=i)
+
+        chart_labels.append(
+            day.strftime("%a")
+        )
+
+        count = 0
+
+        for transaction in weekly_transactions:
+            if transaction.created_at:
+                transaction_day = transaction.created_at.date()
+
+                if transaction_day == day:
+                    count += 1
+
+        chart_values.append(count)
+
+    # ---------------------------------------------------------
+    # STATS OBJECT EXPECTED BY dashboard.html
+    # ---------------------------------------------------------
+
     stats = {
         "total_members": total_members,
         "suspended_members": suspended_members,
         "pending_loans": pending_loans,
         "active_loans": active_loans,
-        "fee_revenue": fee_revenue,
         "total_disbursed": total_disbursed,
+        "total_repaid": total_repaid,
+        "total_fees": total_fees,
+        "txn_count": txn_count,
     }
+
+    # ---------------------------------------------------------
+    # CHART OBJECT EXPECTED BY dashboard.html
+    # ---------------------------------------------------------
+
+    chart = {
+        "labels": chart_labels,
+        "values": chart_values,
+    }
+
+    # ---------------------------------------------------------
+    # RENDER DASHBOARD
+    # ---------------------------------------------------------
 
     return render_template(
         "admin/dashboard.html",
         stats=stats,
+        chart=chart,
+        recent_transactions=recent_transactions,
         recent_members=recent_members,
-        recent_loans=recent_loans,
     )
 
 
