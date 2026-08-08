@@ -14,384 +14,410 @@ Welcome back, {{ current_user.first_name }} 👋
 
 
 <!-- =========================================================
-     STATISTICS
-========================================================= -->
+     SUMMARY STATISTICS
+     ========================================================= -->
 
-<!-- Outstanding Balance -->
-<div class="col-6 col-xl-3">
+<div class="row g-3">
 
-    <div class="card stat-card">
+    <!-- Outstanding Balance -->
+    <div class="col-6 col-xl-3">
 
-        <div class="stat-icon grad-a">
-            <i class="bi bi-cash-stack"></i>
+        <div class="card stat-card">
+
+            <div class="stat-icon grad-a">
+                <i class="bi bi-cash-stack"></i>
+            </div>
+
+            <span class="stat-label">
+                Outstanding Balance
+            </span>
+
+            <strong class="stat-value">
+                {{ outstanding|kes }}
+            </strong>
+
+            <small class="text-muted">
+                Total to repay
+            </small>
+
         </div>
 
-        <span class="stat-label">
-            Outstanding Balance
-        </span>
+    </div>
 
-        <strong class="stat-value">
-            {{ outstanding|kes }}
-        </strong>
 
-        <small class="text-muted">
-            Total to repay
-        </small>
+    <!-- Active Loans -->
+    <div class="col-6 col-xl-3">
+
+        <div class="card stat-card">
+
+            <div class="stat-icon grad-b">
+                <i class="bi bi-wallet2"></i>
+            </div>
+
+            <span class="stat-label">
+                Active Loans
+            </span>
+
+            <strong class="stat-value">
+                {{ active_loans }}
+            </strong>
+
+            <small class="text-muted">
+                In repayment
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- Total Borrowed -->
+    <div class="col-6 col-xl-3">
+
+        <div class="card stat-card">
+
+            <div class="stat-icon grad-c">
+                <i class="bi bi-graph-up-arrow"></i>
+            </div>
+
+            <span class="stat-label">
+                Total Borrowed
+            </span>
+
+            <strong class="stat-value">
+                {{ total_borrowed|kes }}
+            </strong>
+
+            <small class="text-muted">
+                All time
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- Completed Loans -->
+    <div class="col-6 col-xl-3">
+
+        <div class="card stat-card">
+
+            <div class="stat-icon grad-d">
+                <i class="bi bi-patch-check"></i>
+            </div>
+
+            <span class="stat-label">
+                Completed Loans
+            </span>
+
+            <strong class="stat-value">
+                {{ completed_loans }}
+            </strong>
+
+            <small class="text-muted">
+                Fully repaid
+            </small>
+
+        </div>
 
     </div>
 
 </div>
-
-
-<!-- Active Loans -->
-<div class="col-6 col-xl-3">
-
-    <div class="card stat-card">
-
-        <div class="stat-icon grad-b">
-            <i class="bi bi-wallet2"></i>
-        </div>
-
-        <span class="stat-label">
-            Active Loans
-        </span>
-
-        <strong class="stat-value">
-            {{ active_loans }}
-        </strong>
-
-        <small class="text-muted">
-            In repayment
-        </small>
-
-    </div>
-
-</div>
-
-
-<!-- Total Borrowed -->
-<div class="col-6 col-xl-3">
-
-    <div class="card stat-card">
-
-        <div class="stat-icon grad-c">
-            <i class="bi bi-graph-up-arrow"></i>
-        </div>
-
-        <span class="stat-label">
-            Total Borrowed
-        </span>
-
-        <strong class="stat-value">
-            {{ total_borrowed|kes }}
-        </strong>
-
-        <small class="text-muted">
-            All time
-        </small>
-
-    </div>
-
-</div>
-
-
-<!-- Completed Loans -->
-<div class="col-6 col-xl-3">
-
-    <div class="card stat-card">
-
-        <div class="stat-icon grad-d">
-            <i class="bi bi-patch-check"></i>
-        </div>
-
-        <span class="stat-label">
-            Completed Loans
-        </span>
-
-        <strong class="stat-value">
-            {{ completed_loans }}
-        </strong>
-
-        <small class="text-muted">
-            Fully repaid
-        </small>
-
-    </div>
-
-</div>
-
 
 
 <!-- =========================================================
      MONTHLY SPENDING + QUICK ACTIONS
-========================================================= -->
+     ========================================================= -->
 
-<!-- Monthly Spending -->
-<div class="col-lg-8">
+<div class="row g-3 mt-0">
 
-    <div class="card app-card h-100">
 
-        <div class="card-header app-card-header">
+    <!-- =====================================================
+         MONTHLY SPENDING
+         ===================================================== -->
 
-            <h5 class="mb-0">
+    <div class="col-lg-8">
 
-                <i class="bi bi-bar-chart-line me-2 text-green"></i>
+        <div class="card app-card h-100">
 
-                Monthly Spending
+            <div class="card-header app-card-header">
 
-            </h5>
+                <h5 class="mb-0">
+
+                    <i class="bi bi-bar-chart-line me-2 text-green"></i>
+
+                    Monthly Spending
+
+                </h5>
+
+            </div>
+
+
+            <div class="card-body">
+
+                <canvas
+                    id="spendChart"
+                    data-labels='{{ chart_labels|tojson }}'
+                    data-values='{{ chart_values|tojson }}'
+                    height="110">
+                </canvas>
+
+            </div>
 
         </div>
 
+    </div>
 
-        <div class="card-body">
 
-            <canvas
-                id="spendChart"
-                data-labels='{{ chart_labels|tojson }}'
-                data-values='{{ chart_values|tojson }}'
-                height="110">
-            </canvas>
+    <!-- =====================================================
+         QUICK ACTIONS
+         ===================================================== -->
+
+    <div class="col-lg-4">
+
+        <div class="row g-3">
+
+
+            <!-- New Loan -->
+            <div class="col-6">
+
+                <a
+                    class="card quick-card"
+                    href="{{ url_for('loans.apply') }}"
+                >
+
+                    <i class="bi bi-rocket-takeoff"></i>
+
+                    <span>
+                        New Loan
+                    </span>
+
+                </a>
+
+            </div>
+
+
+            <!-- Deposit -->
+            <div class="col-6">
+
+                <a
+                    class="card quick-card"
+                    href="{{ url_for('payments.deposit') }}"
+                >
+
+                    <i class="bi bi-plus-circle"></i>
+
+                    <span>
+                        Deposit
+                    </span>
+
+                </a>
+
+            </div>
+
+
+            <!-- Messages -->
+            <div class="col-6">
+
+                <a
+                    class="card quick-card"
+                    href="{{ url_for('dashboard.messages') }}"
+                >
+
+                    <i class="bi bi-chat-dots"></i>
+
+                    <span>
+                        Messages
+                    </span>
+
+                </a>
+
+            </div>
+
+
+            <!-- Support -->
+            <div class="col-6">
+
+                <a
+                    class="card quick-card"
+                    href="{{ url_for('dashboard.support') }}"
+                >
+
+                    <i class="bi bi-headset"></i>
+
+                    <span>
+                        Support
+                    </span>
+
+                </a>
+
+            </div>
 
         </div>
 
     </div>
 
 </div>
-
-
-<!-- Quick Actions -->
-<div class="col-lg-4">
-
-    <div class="row g-3">
-
-
-        <!-- New Loan -->
-        <div class="col-6">
-
-            <a
-                class="card quick-card"
-                href="{{ url_for('loans.apply') }}"
-            >
-
-                <i class="bi bi-rocket-takeoff"></i>
-
-                <span>
-                    New Loan
-                </span>
-
-            </a>
-
-        </div>
-
-
-        <!-- Deposit -->
-        <div class="col-6">
-
-            <a
-                class="card quick-card"
-                href="{{ url_for('payments.deposit') }}"
-            >
-
-                <i class="bi bi-plus-circle"></i>
-
-                <span>
-                    Deposit
-                </span>
-
-            </a>
-
-        </div>
-
-
-        <!-- Messages -->
-        <div class="col-6">
-
-            <a
-                class="card quick-card"
-                href="{{ url_for('dashboard.messages') }}"
-            >
-
-                <i class="bi bi-chat-dots"></i>
-
-                <span>
-                    Messages
-                </span>
-
-            </a>
-
-        </div>
-
-
-        <!-- Support -->
-        <div class="col-6">
-
-            <a
-                class="card quick-card"
-                href="{{ url_for('dashboard.support') }}"
-            >
-
-                <i class="bi bi-headset"></i>
-
-                <span>
-                    Support
-                </span>
-
-            </a>
-
-        </div>
-
-
-    </div>
-
-</div>
-
 
 
 <!-- =========================================================
      RECENT TRANSACTIONS
-========================================================= -->
+     ========================================================= -->
 
-<div class="col-12">
+<div class="row g-3 mt-0">
 
-    <div class="card app-card">
+    <div class="col-12">
 
-
-        <div
-            class="card-header app-card-header d-flex justify-content-between align-items-center flex-wrap gap-2"
-        >
-
-            <h5 class="mb-0">
-
-                <i class="bi bi-arrow-left-right me-2 text-green"></i>
-
-                Recent Transactions
-
-            </h5>
+        <div class="card app-card">
 
 
-            <a
-                href="{{ url_for('payments.deposit') }}"
-                class="btn btn-sm btn-outline-green"
+            <!-- Header -->
+            <div
+                class="card-header app-card-header d-flex justify-content-between align-items-center flex-wrap gap-2"
             >
-                + New Deposit
-            </a>
 
-        </div>
+                <h5 class="mb-0">
 
+                    <i class="bi bi-arrow-left-right me-2 text-green"></i>
 
-        <div class="table-responsive">
+                    Recent Transactions
 
-            <table class="table app-table align-middle mb-0">
-
-                <thead>
-
-                    <tr>
-
-                        <th>
-                            Description
-                        </th>
-
-                        <th>
-                            Date
-                        </th>
-
-                        <th class="text-end">
-                            Amount Paid
-                        </th>
-
-                        <th class="text-center">
-                            Status
-                        </th>
-
-                    </tr>
-
-                </thead>
+                </h5>
 
 
-                <tbody>
+                <a
+                    href="{{ url_for('payments.deposit') }}"
+                    class="btn btn-sm btn-outline-green"
+                >
+                    + New Deposit
+                </a>
 
-                    {% for t in recent_transactions %}
-
-                    <tr>
-
-                        <td>
-
-                            <div
-                                class="d-flex align-items-center gap-2"
-                            >
-
-                                <span class="txn-icon">
-
-                                    <i
-                                        class="bi {{
-                                            'bi-arrow-down-circle'
-                                            if t.kind == 'deposit'
-                                            else 'bi-arrow-up-circle'
-                                        }}"
-                                    ></i>
-
-                                </span>
+            </div>
 
 
-                                <div>
+            <!-- Table -->
+            <div class="table-responsive">
 
-                                    <strong class="d-block">
-                                        {{ t.description }}
-                                    </strong>
+                <table class="table app-table align-middle mb-0">
 
-                                    <small class="text-muted">
-                                        {{ t.reference }}
-                                    </small>
+
+                    <!-- Table Head -->
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Description
+                            </th>
+
+                            <th>
+                                Date
+                            </th>
+
+                            <th class="text-end">
+                                Amount Paid
+                            </th>
+
+                            <th class="text-center">
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <!-- Table Body -->
+                    <tbody>
+
+                        {% for t in recent_transactions %}
+
+                        <tr>
+
+
+                            <!-- Description -->
+                            <td>
+
+                                <div
+                                    class="d-flex align-items-center gap-2"
+                                >
+
+                                    <span class="txn-icon">
+
+                                        <i
+                                            class="bi {{
+                                                'bi-arrow-down-circle'
+                                                if t.kind == 'deposit'
+                                                else 'bi-arrow-up-circle'
+                                            }}"
+                                        ></i>
+
+                                    </span>
+
+
+                                    <div>
+
+                                        <strong class="d-block">
+                                            {{ t.description }}
+                                        </strong>
+
+                                        <small class="text-muted">
+                                            {{ t.reference }}
+                                        </small>
+
+                                    </div>
 
                                 </div>
 
-                            </div>
-
-                        </td>
+                            </td>
 
 
-                        <td class="text-muted small">
+                            <!-- Date -->
+                            <td class="text-muted small">
 
-                            {{ t.created_at.strftime('%d %b %Y') }}
+                                {{ t.created_at.strftime('%d %b %Y') }}
 
-                        </td>
-
-
-                        <td class="text-end fw-semibold">
-
-                            {{ t.total_amount|kes }}
-
-                        </td>
+                            </td>
 
 
-                        <td class="text-center">
+                            <!-- Amount -->
+                            <td class="text-end fw-semibold">
 
-                            {{ status_badge(t.status) }}
+                                {{ t.total_amount|kes }}
 
-                        </td>
-
-                    </tr>
+                            </td>
 
 
-                    {% else %}
+                            <!-- Status -->
+                            <td class="text-center">
 
-                    <tr>
+                                {{ status_badge(t.status) }}
 
-                        <td
-                            colspan="4"
-                            class="text-center text-muted py-4"
-                        >
-                            No transactions yet.
-                        </td>
+                            </td>
 
-                    </tr>
+                        </tr>
 
-                    {% endfor %}
 
-                </tbody>
+                        {% else %}
 
-            </table>
+                        <tr>
+
+                            <td
+                                colspan="4"
+                                class="text-center text-muted py-4"
+                            >
+                                No transactions yet.
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </div>
 
