@@ -593,3 +593,69 @@ a:hover { color: var(--green); }
     transition-duration: 0.01ms !important;
   }
 }
+/* =========================================================
+   DASHBOARD STAT CARDS - COMPACT MOBILE SIZE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .stat-card {
+        min-height: 155px !important;
+        padding: 12px 8px !important;
+        border-radius: 12px !important;
+    }
+
+    .stat-card .stat-icon {
+        width: 48px !important;
+        height: 48px !important;
+        font-size: 20px !important;
+        margin-bottom: 8px !important;
+    }
+
+    .stat-card .stat-label {
+        font-size: 13px !important;
+        line-height: 1.2 !important;
+        margin-bottom: 5px !important;
+    }
+
+    .stat-card .stat-value {
+        font-size: 22px !important;
+        line-height: 1.1 !important;
+        margin-bottom: 4px !important;
+    }
+
+    .stat-card small {
+        font-size: 11px !important;
+    }
+}
+
+
+/* =========================================================
+   QUICK ACTIONS - GREEN
+   ========================================================= */
+
+.quick-card {
+    color: #078f68 !important;
+    border: 1px solid #078f68 !important;
+    background: #ffffff !important;
+}
+
+.quick-card i {
+    color: #078f68 !important;
+}
+
+.quick-card span {
+    color: #078f68 !important;
+    font-weight: 600;
+}
+
+.quick-card:hover {
+    color: #ffffff !important;
+    background: #078f68 !important;
+    border-color: #078f68 !important;
+}
+
+.quick-card:hover i,
+.quick-card:hover span {
+    color: #ffffff !important;
+}
