@@ -1,516 +1,684 @@
 {% extends 'dashboard_base.html' %}
+
 {% block active_page %}dashboard{% endblock %}
+
 {% block page_title %}Dashboard{% endblock %}
-{% block page_subtitle %}Welcome back, {{ current_user.first_name }} 👋{% endblock %}
+
+{% block page_subtitle %}
+Welcome back, {{ current_user.first_name }} 👋
+{% endblock %}
+
 
 {% block app_content %}
+
 {% from 'partials/_status_badge.html' import status_badge %}
 
-<!-- =========================================================
-     MOBILE COMPACT DASHBOARD
-========================================================= -->
-
-<!-- Stat cards -->
-<div class="row g-2 g-md-3 mb-3 mb-md-4 dashboard-stats">
-
-  <div class="col-6 col-xl-3">
-    <div class="card stat-card compact-stat-card">
-      <div class="stat-icon grad-a">
-        <i class="bi bi-cash-stack"></i>
-      </div>
-      <span class="stat-label">Outstanding Balance</span>
-      <strong class="stat-value">{{ outstanding|kes }}</strong>
-      <small class="text-muted">Total to repay</small>
-    </div>
-  </div>
-
-  <div class="col-6 col-xl-3">
-    <div class="card stat-card compact-stat-card">
-      <div class="stat-icon grad-b">
-        <i class="bi bi-wallet2"></i>
-      </div>
-      <span class="stat-label">Active Loans</span>
-      <strong class="stat-value">{{ active_loans }}</strong>
-      <small class="text-muted">In repayment</small>
-    </div>
-  </div>
-
-  <div class="col-6 col-xl-3">
-    <div class="card stat-card compact-stat-card">
-      <div class="stat-icon grad-c">
-        <i class="bi bi-graph-up-arrow"></i>
-      </div>
-      <span class="stat-label">Total Borrowed</span>
-      <strong class="stat-value">{{ total_borrowed|kes }}</strong>
-      <small class="text-muted">All time</small>
-    </div>
-  </div>
-
-  <div class="col-6 col-xl-3">
-    <div class="card stat-card compact-stat-card">
-      <div class="stat-icon grad-d">
-        <i class="bi bi-patch-check"></i>
-      </div>
-      <span class="stat-label">Completed Loans</span>
-      <strong class="stat-value">{{ completed_loans }}</strong>
-      <small class="text-muted">Fully repaid</small>
-    </div>
-  </div>
-
-</div>
-
 
 <!-- =========================================================
-     CHART + NOTIFICATIONS
-     On mobile these become compact sections
-========================================================= -->
-
-<div class="row g-2 g-md-3 mb-3 mb-md-4">
-
-  <!-- Monthly Spending -->
-  <div class="col-lg-8">
-    <div class="card app-card spending-card h-100">
-
-      <div class="card-header app-card-header">
-        <h5 class="mb-0">
-          <i class="bi bi-bar-chart-line me-2 text-green"></i>
-          Monthly Spending
-        </h5>
-      </div>
-
-      <div class="card-body spending-body">
-        <canvas
-          id="spendChart"
-          data-labels='{{ chart_labels|tojson }}'
-          data-values='{{ chart_values|tojson }}'
-          height="110">
-        </canvas>
-      </div>
-
-    </div>
-  </div>
-
-
-  <!-- Notifications -->
-  <div class="col-lg-4">
-    <div class="card app-card notification-card h-100">
-
-      <div class="card-header app-card-header d-flex justify-content-between align-items-center">
-
-        <h5 class="mb-0">
-          <i class="bi bi-bell me-2 text-green"></i>
-          Notifications
-        </h5>
-
-        <a
-          href="{{ url_for('dashboard.notifications') }}"
-          class="small text-green"
-        >
-          View all
-        </a>
-
-      </div>
-
-      <div class="card-body p-0">
-
-        <ul class="list-group list-group-flush mini-list">
-
-          {% for n in recent_notifications %}
-
-          <li class="list-group-item d-flex gap-3 align-items-start">
-
-            <span class="mini-icon icon-{{ n.category }}">
-              <i class="bi bi-bell"></i>
-            </span>
-
-            <div>
-              <strong class="d-block">{{ n.title }}</strong>
-
-              <small class="text-muted d-block">
-                {{ n.message|truncate(90) }}
-              </small>
-
-              <small class="text-muted">
-                {{ n.created_at.strftime('%d %b, %I:%M %p') }}
-              </small>
-            </div>
-
-          </li>
-
-          {% else %}
-
-          <li class="list-group-item text-center text-muted py-4">
-            No notifications yet.
-          </li>
-
-          {% endfor %}
-
-        </ul>
-
-      </div>
-
-    </div>
-  </div>
-
-</div>
-
-
-<!-- =========================================================
-     QUICK ACTIONS
-========================================================= -->
-
-<div class="row g-2 g-md-3 mb-3 mb-md-4">
-
-  <div class="col-6 col-lg-3">
-    <a
-      class="card quick-card compact-quick-card"
-      href="{{ url_for('loans.apply') }}"
-    >
-      <i class="bi bi-rocket-takeoff"></i>
-      <span>New Loan</span>
-    </a>
-  </div>
-
-  <div class="col-6 col-lg-3">
-    <a
-      class="card quick-card compact-quick-card"
-      href="{{ url_for('payments.deposit') }}"
-    >
-      <i class="bi bi-plus-circle"></i>
-      <span>Deposit</span>
-    </a>
-  </div>
-
-  <div class="col-6 col-lg-3">
-    <a
-      class="card quick-card compact-quick-card"
-      href="{{ url_for('dashboard.messages') }}"
-    >
-      <i class="bi bi-chat-dots"></i>
-      <span>Messages</span>
-    </a>
-  </div>
-
-  <div class="col-6 col-lg-3">
-    <a
-      class="card quick-card compact-quick-card"
-      href="{{ url_for('dashboard.support') }}"
-    >
-      <i class="bi bi-headset"></i>
-      <span>Support</span>
-    </a>
-  </div>
-
-</div>
-
-
-<!-- =========================================================
-     RECENT TRANSACTIONS
-========================================================= -->
-
-<div class="card app-card transactions-card">
-
-  <div class="card-header app-card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
-
-    <h5 class="mb-0">
-      <i class="bi bi-arrow-left-right me-2 text-green"></i>
-      Recent Transactions
-    </h5>
-
-    <a
-      href="{{ url_for('payments.deposit') }}"
-      class="btn btn-sm btn-outline-green"
-    >
-      + New Deposit
-    </a>
-
-  </div>
-
-  <div class="table-responsive">
-
-    <table class="table app-table align-middle mb-0">
-
-      <thead>
-        <tr>
-          <th>Description</th>
-          <th>Date</th>
-          <th class="text-end">Amount Paid</th>
-          <th class="text-center">Status</th>
-        </tr>
-      </thead>
-
-      <tbody>
-
-        {% for t in recent_transactions %}
-
-        <tr>
-
-          <td>
-            <div class="d-flex align-items-center gap-2">
-
-              <span class="txn-icon">
-                <i class="bi {{ 'bi-arrow-down-circle' if t.kind == 'deposit' else 'bi-arrow-up-circle' }}"></i>
-              </span>
-
-              <div>
-                <strong class="d-block">
-                  {{ t.description }}
-                </strong>
-
-                <small class="text-muted">
-                  {{ t.reference }}
-                </small>
-              </div>
-
-            </div>
-          </td>
-
-          <td class="text-muted small">
-            {{ t.created_at.strftime('%d %b %Y') }}
-          </td>
-
-          <td class="text-end fw-semibold">
-            {{ t.total_amount|kes }}
-          </td>
-
-          <td class="text-center">
-            {{ status_badge(t.status) }}
-          </td>
-
-        </tr>
-
-        {% else %}
-
-        <tr>
-          <td colspan="4" class="text-center text-muted py-4">
-            No transactions yet.
-          </td>
-        </tr>
-
-        {% endfor %}
-
-      </tbody>
-
-    </table>
-
-  </div>
-
-</div>
-
-
-<!-- =========================================================
-     MOBILE DASHBOARD STYLES
-========================================================= -->
-
+     MOBILE STAT CARD STYLES
+     ========================================================= -->
 <style>
 
-/* ---------------------------------------------------------
-   MOBILE ONLY
---------------------------------------------------------- */
+    /* Desktop stays unchanged */
+    .dashboard-stats .stat-card {
+        position: relative;
+    }
 
-@media (max-width: 575.98px) {
+    /* =====================================================
+       MOBILE
+       ===================================================== */
+    @media (max-width: 576px) {
 
-  /* Reduce overall dashboard spacing */
-  .dashboard-stats {
-    margin-bottom: 10px !important;
-  }
+        /* Make the four cards smaller */
+        .dashboard-stats {
+            --bs-gutter-x: 8px;
+            --bs-gutter-y: 8px;
+            margin-bottom: 14px !important;
+        }
 
-  /* Make the four statistic cards smaller */
-  .compact-stat-card {
-    min-height: 125px !important;
-    padding: 12px 8px !important;
-    border-radius: 14px !important;
-    text-align: center;
-  }
+        .dashboard-stats > div {
+            padding-left: 4px;
+            padding-right: 4px;
+        }
 
-  /* Smaller icons */
-  .compact-stat-card .stat-icon {
-    width: 42px !important;
-    height: 42px !important;
-    font-size: 18px !important;
-    margin-bottom: 7px !important;
-  }
+        .dashboard-stats .stat-card {
+            min-height: 142px;
+            height: 142px;
 
-  /* Smaller labels */
-  .compact-stat-card .stat-label {
-    font-size: 11px !important;
-    line-height: 1.2 !important;
-    margin-bottom: 3px !important;
-  }
+            padding: 48px 8px 8px !important;
 
-  /* Smaller values */
-  .compact-stat-card .stat-value {
-    font-size: 20px !important;
-    line-height: 1.1 !important;
-    margin-bottom: 3px !important;
-  }
+            border-radius: 16px !important;
 
-  .compact-stat-card small {
-    font-size: 9px !important;
-  }
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
 
+            text-align: center;
+        }
 
-  /* -------------------------------------------------------
-     MONTHLY SPENDING
-  ------------------------------------------------------- */
+        /* Smaller colored icon */
+        .dashboard-stats .stat-icon {
+            width: 48px !important;
+            height: 48px !important;
 
-  .spending-card {
-    min-height: 0 !important;
-    height: auto !important;
-    border-radius: 15px !important;
-  }
+            min-width: 48px !important;
+            min-height: 48px !important;
 
-  .spending-card .app-card-header {
-    padding: 10px 14px !important;
-  }
+            font-size: 1.25rem !important;
 
-  .spending-card .app-card-header h5 {
-    font-size: 16px !important;
-  }
+            border-radius: 14px !important;
 
-  .spending-body {
-    height: 145px !important;
-    padding: 8px !important;
-  }
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
 
-  .spending-body canvas {
-    max-height: 125px !important;
-  }
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
+        /* Smaller title */
+        .dashboard-stats .stat-label {
+            font-size: 11px !important;
+            line-height: 1.2 !important;
 
-  /* -------------------------------------------------------
-     NOTIFICATIONS
-  ------------------------------------------------------- */
+            margin-top: 3px;
+            margin-bottom: 7px;
 
-  .notification-card {
-    min-height: 0 !important;
-    height: auto !important;
-    border-radius: 15px !important;
-  }
+            white-space: nowrap;
+        }
 
-  .notification-card .app-card-header {
-    padding: 10px 14px !important;
-  }
+        /* Smaller amount */
+        .dashboard-stats .stat-value {
+            font-size: 20px !important;
+            line-height: 1.1 !important;
 
-  .notification-card .app-card-header h5 {
-    font-size: 16px !important;
-  }
+            margin-bottom: 6px;
+        }
 
-  .notification-card .list-group-item {
-    padding: 10px 12px !important;
-  }
-
-  /* When there are no notifications, don't create a huge box */
-  .notification-card .list-group-item.py-4 {
-    padding-top: 18px !important;
-    padding-bottom: 18px !important;
-  }
+        /* Smaller description */
+        .dashboard-stats .text-muted {
+            font-size: 10px !important;
+            line-height: 1.1 !important;
+        }
 
 
-  /* -------------------------------------------------------
-     QUICK ACTIONS
-  ------------------------------------------------------- */
+        /* =================================================
+           MONTHLY SPENDING
+           ================================================= */
 
-  .compact-quick-card {
-    min-height: 58px !important;
-    height: 58px !important;
-    padding: 8px 10px !important;
-    border-radius: 12px !important;
+        .dashboard-chart-row {
+            margin-bottom: 14px !important;
+        }
 
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    gap: 8px !important;
-  }
+        .dashboard-chart-row .app-card {
+            min-height: 250px;
+        }
 
-  .compact-quick-card i {
-    font-size: 18px !important;
-  }
+        .dashboard-chart-row .card-header {
+            padding: 12px 14px !important;
+        }
 
-  .compact-quick-card span {
-    font-size: 14px !important;
-    font-weight: 600 !important;
-  }
+        .dashboard-chart-row .card-header h5 {
+            font-size: 17px !important;
+        }
+
+        .dashboard-chart-row .card-body {
+            padding: 8px !important;
+        }
 
 
-  /* -------------------------------------------------------
-     RECENT TRANSACTIONS
-  ------------------------------------------------------- */
+        /* =================================================
+           NOTIFICATIONS
+           ================================================= */
 
-  .transactions-card {
-    border-radius: 15px !important;
-  }
+        .dashboard-notifications .card-header {
+            padding: 12px 14px !important;
+        }
 
-  .transactions-card .app-card-header {
-    padding: 10px 12px !important;
-  }
+        .dashboard-notifications .card-header h5 {
+            font-size: 17px !important;
+        }
 
-  .transactions-card .app-card-header h5 {
-    font-size: 16px !important;
-  }
-
-  .transactions-card .app-card-header .btn {
-    font-size: 11px !important;
-    padding: 5px 8px !important;
-  }
-
-  .transactions-card table {
-    font-size: 11px !important;
-  }
-
-  .transactions-card th {
-    font-size: 9px !important;
-    padding: 8px 6px !important;
-  }
-
-  .transactions-card td {
-    padding: 8px 6px !important;
-  }
-
-  .transactions-card .txn-icon {
-    display: none !important;
-  }
-
-}
+        .dashboard-notifications .card-body {
+            min-height: 82px;
+        }
 
 
-/* ---------------------------------------------------------
-   EXTRA SMALL PHONES
---------------------------------------------------------- */
+        /* =================================================
+           QUICK ACTIONS
+           ================================================= */
 
-@media (max-width: 380px) {
+        .dashboard-quick-actions {
+            --bs-gutter-x: 8px;
+            --bs-gutter-y: 8px;
 
-  .compact-stat-card {
-    min-height: 115px !important;
-    padding: 9px 5px !important;
-  }
+            margin-bottom: 14px !important;
+        }
 
-  .compact-stat-card .stat-icon {
-    width: 36px !important;
-    height: 36px !important;
-    font-size: 15px !important;
-  }
+        .dashboard-quick-actions > div {
+            padding-left: 4px;
+            padding-right: 4px;
+        }
 
-  .compact-stat-card .stat-value {
-    font-size: 17px !important;
-  }
+        .dashboard-quick-actions .quick-card {
+            min-height: 70px;
+            height: 70px;
 
-  .compact-stat-card .stat-label {
-    font-size: 10px !important;
-  }
+            padding: 10px !important;
 
-  .compact-quick-card {
-    height: 52px !important;
-    min-height: 52px !important;
-  }
+            border-radius: 14px !important;
 
-  .compact-quick-card span {
-    font-size: 12px !important;
-  }
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
 
-}
+            gap: 8px;
+        }
+
+        .dashboard-quick-actions .quick-card i {
+            font-size: 1.25rem !important;
+        }
+
+        .dashboard-quick-actions .quick-card span {
+            font-size: 14px !important;
+        }
+
+
+        /* =================================================
+           RECENT TRANSACTIONS
+           ================================================= */
+
+        .dashboard-transactions .card-header {
+            padding: 12px 14px !important;
+        }
+
+        .dashboard-transactions .card-header h5 {
+            font-size: 17px !important;
+        }
+
+        .dashboard-transactions .btn {
+            font-size: 11px !important;
+            padding: 5px 9px !important;
+        }
+
+        .dashboard-transactions table {
+            font-size: 11px;
+        }
+
+    }
 
 </style>
+
+
+<!-- =========================================================
+     STAT CARDS
+     ========================================================= -->
+
+<div class="row g-3 mb-4 dashboard-stats">
+
+    <!-- Outstanding Balance -->
+    <div class="col-6 col-xl-3">
+
+        <div class="card stat-card">
+
+            <div class="stat-icon grad-a">
+                <i class="bi bi-cash-stack"></i>
+            </div>
+
+            <span class="stat-label">
+                Outstanding Balance
+            </span>
+
+            <strong class="stat-value">
+                {{ outstanding|kes }}
+            </strong>
+
+            <small class="text-muted">
+                Total to repay
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- Active Loans -->
+    <div class="col-6 col-xl-3">
+
+        <div class="card stat-card">
+
+            <div class="stat-icon grad-b">
+                <i class="bi bi-wallet2"></i>
+            </div>
+
+            <span class="stat-label">
+                Active Loans
+            </span>
+
+            <strong class="stat-value">
+                {{ active_loans }}
+            </strong>
+
+            <small class="text-muted">
+                In repayment
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- Total Borrowed -->
+    <div class="col-6 col-xl-3">
+
+        <div class="card stat-card">
+
+            <div class="stat-icon grad-c">
+                <i class="bi bi-graph-up-arrow"></i>
+            </div>
+
+            <span class="stat-label">
+                Total Borrowed
+            </span>
+
+            <strong class="stat-value">
+                {{ total_borrowed|kes }}
+            </strong>
+
+            <small class="text-muted">
+                All time
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- Completed Loans -->
+    <div class="col-6 col-xl-3">
+
+        <div class="card stat-card">
+
+            <div class="stat-icon grad-d">
+                <i class="bi bi-patch-check"></i>
+            </div>
+
+            <span class="stat-label">
+                Completed Loans
+            </span>
+
+            <strong class="stat-value">
+                {{ completed_loans }}
+            </strong>
+
+            <small class="text-muted">
+                Fully repaid
+            </small>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     MONTHLY SPENDING + NOTIFICATIONS
+     ========================================================= -->
+
+<div class="row g-3 mb-4 dashboard-chart-row">
+
+
+    <!-- Monthly Spending -->
+    <div class="col-lg-8">
+
+        <div class="card app-card h-100">
+
+            <div class="card-header app-card-header">
+
+                <h5 class="mb-0">
+
+                    <i class="bi bi-bar-chart-line me-2 text-green"></i>
+
+                    Monthly Spending
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <canvas
+                    id="spendChart"
+                    data-labels='{{ chart_labels|tojson }}'
+                    data-values='{{ chart_values|tojson }}'
+                    height="110">
+                </canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Notifications -->
+    <div class="col-lg-4 dashboard-notifications">
+
+        <div class="card app-card h-100">
+
+            <div
+                class="card-header app-card-header d-flex justify-content-between align-items-center"
+            >
+
+                <h5 class="mb-0">
+
+                    <i class="bi bi-bell me-2 text-green"></i>
+
+                    Notifications
+
+                </h5>
+
+                <a
+                    href="{{ url_for('dashboard.notifications') }}"
+                    class="small text-green"
+                >
+                    View all
+                </a>
+
+            </div>
+
+
+            <div class="card-body p-0">
+
+                <ul class="list-group list-group-flush mini-list">
+
+                    {% for n in recent_notifications %}
+
+                    <li
+                        class="list-group-item d-flex gap-3 align-items-start"
+                    >
+
+                        <span class="mini-icon icon-{{ n.category }}">
+
+                            <i class="bi bi-bell"></i>
+
+                        </span>
+
+                        <div>
+
+                            <strong class="d-block">
+                                {{ n.title }}
+                            </strong>
+
+                            <small class="text-muted d-block">
+                                {{ n.message|truncate(90) }}
+                            </small>
+
+                            <small class="text-muted">
+                                {{ n.created_at.strftime('%d %b, %I:%M %p') }}
+                            </small>
+
+                        </div>
+
+                    </li>
+
+                    {% else %}
+
+                    <li
+                        class="list-group-item text-center text-muted py-4"
+                    >
+                        No notifications yet.
+                    </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     QUICK ACTIONS
+     ========================================================= -->
+
+<div class="row g-3 mb-4 dashboard-quick-actions">
+
+    <!-- New Loan -->
+    <div class="col-6 col-lg-3">
+
+        <a
+            class="card quick-card"
+            href="{{ url_for('loans.apply') }}"
+        >
+
+            <i class="bi bi-rocket-takeoff"></i>
+
+            <span>
+                New Loan
+            </span>
+
+        </a>
+
+    </div>
+
+
+    <!-- Deposit -->
+    <div class="col-6 col-lg-3">
+
+        <a
+            class="card quick-card"
+            href="{{ url_for('payments.deposit') }}"
+        >
+
+            <i class="bi bi-plus-circle"></i>
+
+            <span>
+                Deposit
+            </span>
+
+        </a>
+
+    </div>
+
+
+    <!-- Messages -->
+    <div class="col-6 col-lg-3">
+
+        <a
+            class="card quick-card"
+            href="{{ url_for('dashboard.messages') }}"
+        >
+
+            <i class="bi bi-chat-dots"></i>
+
+            <span>
+                Messages
+            </span>
+
+        </a>
+
+    </div>
+
+
+    <!-- Support -->
+    <div class="col-6 col-lg-3">
+
+        <a
+            class="card quick-card"
+            href="{{ url_for('dashboard.support') }}"
+        >
+
+            <i class="bi bi-headset"></i>
+
+            <span>
+                Support
+            </span>
+
+        </a>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     RECENT TRANSACTIONS
+     ========================================================= -->
+
+<div class="card app-card dashboard-transactions">
+
+    <div
+        class="card-header app-card-header d-flex justify-content-between align-items-center flex-wrap gap-2"
+    >
+
+        <h5 class="mb-0">
+
+            <i class="bi bi-arrow-left-right me-2 text-green"></i>
+
+            Recent Transactions
+
+        </h5>
+
+
+        <a
+            href="{{ url_for('payments.deposit') }}"
+            class="btn btn-sm btn-outline-green"
+        >
+            + New Deposit
+        </a>
+
+    </div>
+
+
+    <div class="table-responsive">
+
+        <table class="table app-table align-middle mb-0">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Description
+                    </th>
+
+                    <th>
+                        Date
+                    </th>
+
+                    <th class="text-end">
+                        Amount Paid
+                    </th>
+
+                    <th class="text-center">
+                        Status
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for t in recent_transactions %}
+
+                <tr>
+
+                    <td>
+
+                        <div
+                            class="d-flex align-items-center gap-2"
+                        >
+
+                            <span class="txn-icon">
+
+                                <i
+                                    class="bi {{
+                                        'bi-arrow-down-circle'
+                                        if t.kind == 'deposit'
+                                        else 'bi-arrow-up-circle'
+                                    }}"
+                                ></i>
+
+                            </span>
+
+
+                            <div>
+
+                                <strong class="d-block">
+                                    {{ t.description }}
+                                </strong>
+
+                                <small class="text-muted">
+                                    {{ t.reference }}
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <td class="text-muted small">
+
+                        {{ t.created_at.strftime('%d %b %Y') }}
+
+                    </td>
+
+
+                    <td class="text-end fw-semibold">
+
+                        {{ t.total_amount|kes }}
+
+                    </td>
+
+
+                    <td class="text-center">
+
+                        {{ status_badge(t.status) }}
+
+                    </td>
+
+                </tr>
+
+
+                {% else %}
+
+                <tr>
+
+                    <td
+                        colspan="4"
+                        class="text-center text-muted py-4"
+                    >
+                        No transactions yet.
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
 
 {% endblock %}
