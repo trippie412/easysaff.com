@@ -1170,3 +1170,35 @@ a:hover { color: var(--green); }
         font-size: 0.76rem !important;
     }
 }
+/* =====================================================
+   QUICK ACTION CARDS - BLUE
+   New Loan / Deposit / Messages / Support
+   ===================================================== */
+
+.quick-card {
+    background: linear-gradient(135deg, #2f80ed, #1976e8) !important;
+    color: #ffffff !important;
+    border: none !important;
+    text-decoration: none !important;
+}
+
+.quick-card i,
+.quick-card span {
+    color: #ffffff !important;
+}
+
+.quick-card:hover,
+.quick-card:focus,
+.quick-card:active {
+    background: linear-gradient(135deg, #2f80ed, #1976e8) !important;
+    color: #ffffff !important;
+}
+
+.quick-card:hover i,
+.quick-card:hover span,
+.quick-card:focus i,
+.quick-card:focus span,
+.quick-card:active i,
+.quick-card:active span {
+    color: #ffffff !important;
+}
