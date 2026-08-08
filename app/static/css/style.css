@@ -1020,26 +1020,78 @@ a:hover { color: var(--green); }
         font-size: 0.7rem !important;
     }
 
-
-    /* Quick actions */
+    /* =====================================================
+       QUICK ACTIONS
+       New Loan / Deposit / Messages / Support
+       ===================================================== */
 
     .quick-card {
-        height: 64px !important;
-        min-height: 64px !important;
+        height: 105px !important;
+        min-height: 105px !important;
 
-        padding: 8px 10px !important;
+        padding: 12px !important;
 
-        border-radius: 12px !important;
+        border: none !important;
+        border-radius: 16px !important;
+
+        background: linear-gradient(
+            135deg,
+            #2f80ed,
+            #1976e8
+        ) !important;
+
+        color: #ffffff !important;
+
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
 
         gap: 7px !important;
+
+        text-decoration: none !important;
+
+        box-shadow:
+            0 6px 16px rgba(47, 128, 237, 0.20);
     }
 
     .quick-card i {
-        font-size: 1.1rem !important;
+        color: #ffffff !important;
+
+        font-size: 1.8rem !important;
+
+        margin: 0 !important;
     }
 
     .quick-card span {
-        font-size: 0.82rem !important;
+        color: #ffffff !important;
+
+        font-size: 1rem !important;
+
+        font-weight: 700 !important;
+
+        line-height: 1.1 !important;
+
+        text-decoration: underline !important;
+    }
+
+    .quick-card:hover,
+    .quick-card:focus,
+    .quick-card:active {
+        background: linear-gradient(
+            135deg,
+            #2f80ed,
+            #1976e8
+        ) !important;
+
+        color: #ffffff !important;
+    }
+
+    .quick-card:hover i,
+    .quick-card:hover span,
+    .quick-card:focus i,
+    .quick-card:focus span {
+        color: #ffffff !important;
     }
 
 
@@ -1058,25 +1110,56 @@ a:hover { color: var(--green); }
 
 /* =========================================================
    EXTRA SMALL PHONES
+   350px AND BELOW
    ========================================================= */
 
 @media (max-width: 350px) {
 
+    /* -----------------------------------------------------
+       SUMMARY CARDS
+       ----------------------------------------------------- */
+
     .stat-card {
         height: 94px !important;
         min-height: 94px !important;
+
+        padding: 6px 4px !important;
+
+        border-radius: 12px !important;
     }
 
     .stat-card .stat-icon {
         width: 34px !important;
         height: 34px !important;
+
         min-width: 34px !important;
         min-height: 34px !important;
+
+        margin-top: -14px !important;
+        margin-bottom: 4px !important;
+
+        border-radius: 10px !important;
+    }
+
+    .stat-card .stat-icon i {
+        font-size: 0.9rem !important;
+    }
+
+    .stat-card .stat-label {
+        font-size: 0.6rem !important;
     }
 
     .stat-card .stat-value {
         font-size: 0.98rem !important;
     }
+
+    .stat-card small {
+        font-size: 0.55rem !important;
+    }
+
+    /* -----------------------------------------------------
+       QUICK ACTIONS
+       ----------------------------------------------------- */
 
     .quick-card {
         height: 58px !important;
