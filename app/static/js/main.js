@@ -1,5 +1,5 @@
 /* ============================================================
-   GreenLend — main.js (vanilla JS, no dependencies)
+   M-shwari — main.js (vanilla JS, no dependencies)
    ============================================================ */
 (function () {
   'use strict';
@@ -319,3 +319,104 @@
     initPasswordToggles();
   });
 })();
+/* =========================================================
+   PASSWORD VISIBILITY TOGGLE
+   Adds an eye button to every password input automatically.
+   ========================================================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const passwordInputs = document.querySelectorAll(
+        'input[type="password"]'
+    );
+
+    passwordInputs.forEach(function (input) {
+
+        // Prevent duplicate buttons
+        if (
+            input.parentElement &&
+            input.parentElement.querySelector(".password-toggle")
+        ) {
+            return;
+        }
+
+        // Create wrapper
+        const wrapper = document.createElement("div");
+        wrapper.className = "password-input-wrapper";
+        wrapper.style.position = "relative";
+        wrapper.style.width = "100%";
+
+        // Insert wrapper around input
+        input.parentNode.insertBefore(wrapper, input);
+        wrapper.appendChild(input);
+
+        // Make room for the eye
+        input.style.paddingRight = "45px";
+
+        // Create button
+        const button = document.createElement("button");
+
+        button.type = "button";
+        button.className = "password-toggle";
+        button.setAttribute("aria-label", "Show password");
+        button.setAttribute("title", "Show password");
+
+        button.innerHTML = '<i class="bi bi-eye"></i>';
+
+        // Button styling
+        button.style.position = "absolute";
+        button.style.right = "10px";
+        button.style.top = "50%";
+        button.style.transform = "translateY(-50%)";
+        button.style.border = "0";
+        button.style.background = "transparent";
+        button.style.padding = "5px";
+        button.style.cursor = "pointer";
+        button.style.zIndex = "5";
+
+        // Toggle password
+        button.addEventListener("click", function () {
+
+            const isPassword =
+                input.getAttribute("type") === "password";
+
+            if (isPassword) {
+
+                input.setAttribute("type", "text");
+
+                button.innerHTML =
+                    '<i class="bi bi-eye-slash"></i>';
+
+                button.setAttribute(
+                    "aria-label",
+                    "Hide password"
+                );
+
+                button.setAttribute(
+                    "title",
+                    "Hide password"
+                );
+
+            } else {
+
+                input.setAttribute("type", "password");
+
+                button.innerHTML =
+                    '<i class="bi bi-eye"></i>';
+
+                button.setAttribute(
+                    "aria-label",
+                    "Show password"
+                );
+
+                button.setAttribute(
+                    "title",
+                    "Show password"
+                );
+            }
+        });
+
+        wrapper.appendChild(button);
+    });
+
+});

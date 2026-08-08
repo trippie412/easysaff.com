@@ -19,7 +19,7 @@
       <div class="chat-thread">
         {% for m in items %}
         <div class="chat-bubble {{ 'bubble-out' if m.direction == 'out' else 'bubble-in' }}">
-          <small class="chat-author">{{ 'You' if m.direction == 'out' else 'GreenLend Support' }}</small>
+          <small class="chat-author">{{ 'You' if m.direction == 'out' else 'M-shwari Support' }}</small>
           <p class="mb-1">{{ m.body }}</p>
           <small class="chat-time">{{ m.created_at.strftime('%d %b, %I:%M %p') }}</small>
         </div>
@@ -38,7 +38,7 @@
       <h6 class="mb-3"><i class="bi bi-life-preserver me-2 text-green"></i>Support Info</h6>
       <ul class="list-unstyled small mb-0">
         <li class="mb-2"><i class="bi bi-telephone me-2 text-green"></i>0700 000 000</li>
-        <li class="mb-2"><i class="bi bi-envelope me-2 text-green"></i>support@greenlend.co.ke</li>
+        <li class="mb-2"><i class="bi bi-envelope me-2 text-green"></i>support@m-shwari.co.ke</li>
         <li><i class="bi bi-clock me-2 text-green"></i>24/7 — avg. reply 5 min</li>
       </ul>
     </div>

@@ -89,7 +89,7 @@ def seed_database():
         db.session.add_all(txns)
 
         db.session.add_all([
-            Notification(user_id=demo.id, title="Welcome to GreenLend",
+            Notification(user_id=demo.id, title="Welcome to M-shwari",
                          message="Your account is ready. Explore our loan products.",
                          category="success"),
             Notification(user_id=demo.id, title="Loan Approved",
@@ -98,7 +98,7 @@ def seed_database():
             Notification(user_id=demo.id, title="Payment Reminder",
                          message="You have a pending Hustler Fund repayment of KES 15,450.",
                          category="warning"),
-            Message(user_id=demo.id, direction="in", subject="Welcome to GreenLend",
+            Message(user_id=demo.id, direction="in", subject="Welcome to M-shwari",
                     body="Hello! We're glad to have you. Reply anytime for support.",
                     is_read=False, created_at=now - timedelta(days=3)),
             Message(user_id=demo.id, direction="out", subject="Credit limit",
