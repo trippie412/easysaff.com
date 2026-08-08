@@ -15,7 +15,7 @@ class Config:
 
     # ---- Mock behaviour (development only) ------------------------------
     SHOW_MOCK_CODES = True              # display mock OTP codes on-screen
-    STK_SIM_DELAY_SECONDS = 5           # mock STK Push processing time
+    STK_SIM_DELAY_SECONDS = 3           # mock STK Push processing time
     STK_SIM_FAIL_PHONE_SUFFIX = "5555"  # phones ending in this suffix fail
 
     # ---- M-PESA / Daraja SANDBOX placeholders ---------------------------
