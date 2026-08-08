@@ -594,68 +594,292 @@ a:hover { color: var(--green); }
   }
 }
 /* =========================================================
-   DASHBOARD STAT CARDS - COMPACT MOBILE SIZE
+   MOBILE DASHBOARD - COMPACT ONE-SCREEN LAYOUT
    ========================================================= */
 
-@media (max-width: 768px) {
+@media (max-width: 576px) {
+
+    /* -----------------------------------------------------
+       MAIN DASHBOARD SPACING
+       ----------------------------------------------------- */
+
+    .dashboard-container {
+        padding: 8px !important;
+    }
+
+    .container,
+    .container-fluid {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+
+
+    /* -----------------------------------------------------
+       4 SUMMARY CARDS
+       2 COLUMNS × 2 ROWS
+       ----------------------------------------------------- */
+
+    .dashboard-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 8px !important;
+        margin-bottom: 10px !important;
+    }
 
     .stat-card {
-        min-height: 155px !important;
-        padding: 12px 8px !important;
-        border-radius: 12px !important;
+        height: 125px !important;
+        min-height: 125px !important;
+        padding: 10px 6px !important;
+        margin: 0 !important;
+        border-radius: 14px !important;
+
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
 
-    .stat-card .stat-icon {
-        width: 48px !important;
-        height: 48px !important;
-        font-size: 20px !important;
-        margin-bottom: 8px !important;
-    }
+    /* Stat card icon */
 
-    .stat-card .stat-label {
-        font-size: 13px !important;
-        line-height: 1.2 !important;
+    .stat-card .stat-icon,
+    .stat-card > div:first-child {
+        width: 46px !important;
+        height: 46px !important;
+        min-height: 46px !important;
         margin-bottom: 5px !important;
     }
 
-    .stat-card .stat-value {
-        font-size: 22px !important;
-        line-height: 1.1 !important;
-        margin-bottom: 4px !important;
+    .stat-card i {
+        font-size: 1.25rem !important;
     }
 
-    .stat-card small {
-        font-size: 11px !important;
+    /* Stat title */
+
+    .stat-card h6,
+    .stat-card h5,
+    .stat-card .text-muted {
+        font-size: 0.72rem !important;
+        line-height: 1.15 !important;
+        margin-bottom: 3px !important;
     }
+
+    /* Amount */
+
+    .stat-card h3,
+    .stat-card h4 {
+        font-size: 1.25rem !important;
+        line-height: 1.1 !important;
+        margin: 3px 0 !important;
+    }
+
+    /* Bottom description */
+
+    .stat-card small {
+        font-size: 0.65rem !important;
+        line-height: 1 !important;
+    }
+
+
+    /* -----------------------------------------------------
+       MONTHLY SPENDING
+       ----------------------------------------------------- */
+
+    .card.mb-4 {
+        margin-bottom: 10px !important;
+    }
+
+    /* Target the spending card */
+
+    .dashboard-grid + .card {
+        border-radius: 14px !important;
+    }
+
+    .dashboard-grid + .card .card-header {
+        padding: 10px 12px !important;
+    }
+
+    .dashboard-grid + .card .card-header h5 {
+        font-size: 0.95rem !important;
+    }
+
+    .dashboard-grid + .card .card-body {
+        height: 90px !important;
+        min-height: 90px !important;
+        padding: 10px !important;
+    }
+
+
+    /* -----------------------------------------------------
+       NOTIFICATIONS
+       ----------------------------------------------------- */
+
+    .dashboard-grid + .card + .card {
+        border-radius: 14px !important;
+        margin-bottom: 10px !important;
+    }
+
+    .dashboard-grid + .card + .card .card-header {
+        padding: 10px 12px !important;
+    }
+
+    .dashboard-grid + .card + .card .card-header h5 {
+        font-size: 0.95rem !important;
+    }
+
+    .dashboard-grid + .card + .card .card-body {
+        min-height: 55px !important;
+        padding: 10px !important;
+    }
+
+
+    /* -----------------------------------------------------
+       QUICK ACTIONS
+       ----------------------------------------------------- */
+
+    .quick-actions {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 7px !important;
+        margin-bottom: 10px !important;
+    }
+
+    .quick-card {
+        min-height: 48px !important;
+        height: 48px !important;
+        padding: 7px 10px !important;
+        border-radius: 9px !important;
+
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+    }
+
+    .quick-card i {
+        font-size: 0.9rem !important;
+    }
+
+    .quick-card h6,
+    .quick-card strong,
+    .quick-card span {
+        font-size: 0.82rem !important;
+    }
+
+
+    /* -----------------------------------------------------
+       RECENT TRANSACTIONS
+       ----------------------------------------------------- */
+
+    .quick-actions + .card {
+        border-radius: 14px !important;
+        margin-bottom: 10px !important;
+    }
+
+    .quick-actions + .card .card-header {
+        padding: 10px 12px !important;
+    }
+
+    .quick-actions + .card .card-header h5 {
+        font-size: 0.95rem !important;
+    }
+
+    .quick-actions + .card .card-body {
+        padding: 0 !important;
+    }
+
+    /* Smaller transaction table */
+
+    .quick-actions + .card table {
+        font-size: 0.65rem !important;
+    }
+
+    .quick-actions + .card th,
+    .quick-actions + .card td {
+        padding: 7px 5px !important;
+    }
+
+    /* New deposit button */
+
+    .quick-actions + .card .btn {
+        font-size: 0.68rem !important;
+        padding: 5px 8px !important;
+        border-radius: 15px !important;
+    }
+
+
+    /* -----------------------------------------------------
+       ALERT / WELCOME MESSAGE
+       ----------------------------------------------------- */
+
+    .alert {
+        margin-bottom: 8px !important;
+        padding: 9px 11px !important;
+        font-size: 0.78rem !important;
+        border-radius: 9px !important;
+    }
+
+
+    /* -----------------------------------------------------
+       GENERAL TYPOGRAPHY
+       ----------------------------------------------------- */
+
+    .dashboard-page h1 {
+        font-size: 1.25rem !important;
+    }
+
+    .dashboard-page h2 {
+        font-size: 1.1rem !important;
+    }
+
+    .dashboard-page h5 {
+        font-size: 0.95rem !important;
+    }
+
 }
 
 
 /* =========================================================
-   QUICK ACTIONS - GREEN
+   VERY SMALL PHONES
    ========================================================= */
 
-.quick-card {
-    color: #078f68 !important;
-    border: 1px solid #078f68 !important;
-    background: #ffffff !important;
-}
+@media (max-width: 390px) {
 
-.quick-card i {
-    color: #078f68 !important;
-}
+    .dashboard-grid {
+        gap: 6px !important;
+    }
 
-.quick-card span {
-    color: #078f68 !important;
-    font-weight: 600;
-}
+    .stat-card {
+        height: 112px !important;
+        min-height: 112px !important;
+        padding: 7px 5px !important;
+    }
 
-.quick-card:hover {
-    color: #ffffff !important;
-    background: #078f68 !important;
-    border-color: #078f68 !important;
-}
+    .stat-card .stat-icon,
+    .stat-card > div:first-child {
+        width: 40px !important;
+        height: 40px !important;
+        min-height: 40px !important;
+    }
 
-.quick-card:hover i,
-.quick-card:hover span {
-    color: #ffffff !important;
+    .stat-card h3,
+    .stat-card h4 {
+        font-size: 1.1rem !important;
+    }
+
+    .stat-card h6,
+    .stat-card h5,
+    .stat-card .text-muted {
+        font-size: 0.67rem !important;
+    }
+
+    .quick-card {
+        height: 44px !important;
+        min-height: 44px !important;
+        padding: 6px 8px !important;
+    }
+
+    .quick-card h6,
+    .quick-card strong,
+    .quick-card span {
+        font-size: 0.75rem !important;
+    }
 }
