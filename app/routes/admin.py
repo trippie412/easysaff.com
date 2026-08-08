@@ -61,39 +61,81 @@ def logout():
 @admin_bp.route("/")
 @admin_required
 def dashboard():
+    # Member statistics
     total_members = User.query.filter_by(is_admin=False).count()
-    suspended_members = User.query.filter_by(is_admin=False, is_suspended=True).count()
-    pending_loans = LoanApplication.query.filter_by(status="pending").count()
+    suspended_members = User.query.filter_by(
+        is_admin=False,
+        is_suspended=True,
+    ).count()
+
+    # Loan statistics
+    pending_loans = LoanApplication.query.filter_by(
+        status="pending"
+    ).count()
+
     active_loans = LoanApplication.query.filter(
         LoanApplication.status.in_(["disbursed", "repaying"])
     ).count()
 
-    fee_revenue = db.session.query(
-        db.func.coalesce(db.func.sum(Transaction.service_fee), 0)
-    ).filter(Transaction.status == "completed").scalar()
+    # Financial statistics
+    fee_revenue = (
+        db.session.query(
+            db.func.coalesce(
+                db.func.sum(Transaction.service_fee),
+                0,
+            )
+        )
+        .filter(Transaction.status == "completed")
+        .scalar()
+        or 0
+    )
 
-    total_disbursed = db.session.query(
-        db.func.coalesce(db.func.sum(LoanApplication.amount), 0)
-    ).filter(LoanApplication.status.in_(["disbursed", "repaying", "paid"])).scalar()
+    total_disbursed = (
+        db.session.query(
+            db.func.coalesce(
+                db.func.sum(LoanApplication.amount),
+                0,
+            )
+        )
+        .filter(
+            LoanApplication.status.in_(
+                ["disbursed", "repaying", "paid"]
+            )
+        )
+        .scalar()
+        or 0
+    )
 
+    # Recent members
     recent_members = (
-        User.query.filter_by(is_admin=False)
+        User.query
+        .filter_by(is_admin=False)
         .order_by(User.created_at.desc())
         .limit(6)
         .all()
     )
+
+    # Recent loans
     recent_loans = (
-        LoanApplication.query.order_by(LoanApplication.created_at.desc()).limit(6).all()
+        LoanApplication.query
+        .order_by(LoanApplication.created_at.desc())
+        .limit(6)
+        .all()
     )
+
+    # Dashboard statistics expected by admin/dashboard.html
+    stats = {
+        "total_members": total_members,
+        "suspended_members": suspended_members,
+        "pending_loans": pending_loans,
+        "active_loans": active_loans,
+        "fee_revenue": fee_revenue,
+        "total_disbursed": total_disbursed,
+    }
 
     return render_template(
         "admin/dashboard.html",
-        total_members=total_members,
-        suspended_members=suspended_members,
-        pending_loans=pending_loans,
-        active_loans=active_loans,
-        fee_revenue=fee_revenue,
-        total_disbursed=total_disbursed,
+        stats=stats,
         recent_members=recent_members,
         recent_loans=recent_loans,
     )
