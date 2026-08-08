@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from functools import wraps
+from types import SimpleNamespace
 
 from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
@@ -247,10 +248,10 @@ def dashboard():
     # CHART OBJECT EXPECTED BY dashboard.html
     # ---------------------------------------------------------
 
-    chart = {
-        "labels": chart_labels,
-        "values": chart_values,
-    }
+    chart = SimpleNamespace(
+        labels=chart_labels,
+        values=chart_values,
+    )
 
     # ---------------------------------------------------------
     # RENDER DASHBOARD
